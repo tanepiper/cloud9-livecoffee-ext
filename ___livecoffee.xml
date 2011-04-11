@@ -1,0 +1,25 @@
+<a:application xmlns:a="http://ajax.org/2005/aml">
+    <a:tab id="tabLivecoffee" skin="docktab" visible="false">
+        <a:page id="livecoffeeView" caption="Live Coffee">
+            <a:codeeditor id="coffeeCode" 
+                  flex      = "1"
+                  realtime  = "true"
+                  border    = "0" 
+                  model     = "{require('ext/settings/settings').model}" 
+                  value     = "[auto/console/input]"
+                  softtabs          = "[{require('ext/settings/settings').model}::editors/code/@softtabs]"
+                  tabsize           = "[{require('ext/settings/settings').model}::editors/code/@tabsize]"
+                  scrollspeed       = "[{require('ext/settings/settings').model}::editors/code/@scrollspeed]"
+                  theme             = "[{require('ext/settings/settings').model}::editors/code/@theme]"
+                  selectstyle       = "[{require('ext/settings/settings').model}::editors/code/@selectstyle]"
+                  activeline        = "[{require('ext/settings/settings').model}::editors/code/@activeline]"
+                  showinvisibles    = "[{require('ext/settings/settings').model}::editors/code/@showinvisibles]"
+                  showprintmargin   = "false"
+                  printmargincolumn = "0" />
+                  
+            <a:statusbar id="coffeeStatus">
+                <a:section id="coffeeStatusOutput"></a:section>
+            </a:statusbar>
+        </a:page>
+    </a:tab>
+</a:application>

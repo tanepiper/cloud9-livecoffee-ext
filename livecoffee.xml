@@ -1,0 +1,30 @@
+<a:application xmlns:a="http://ajax.org/2005/aml">
+    <a:window
+      id = "coffeeOutput"
+      title = "CoffeeScript Output"
+      center = "true"
+      modal = "false"
+      buttons = "close"
+      kbclose = "true"
+      width = "800"
+      height = "500">
+        <a:codeeditor
+            id="coffeeCode"
+            flex="1"
+            realtime="true"
+            border="0"
+            showprintmargin="false"
+            printmargincolumn="0"
+            width="780"
+            height="400" />
+        <a:divider />
+        <a:hbox pack="end" padding="5" edge="10 10 5 10">
+            <a:button class="ui-btn-green" default="2" caption="View JS" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
+            <a:button onclick="coffeeOutput.hide()">Done</a:button>
+        </a:hbox>
+        <a:divider />          
+        <a:statusbar id="coffeeStatus">
+            <a:section id="coffeeStatusOutput" />
+        </a:statusbar>
+    </a:window>
+</a:application>
