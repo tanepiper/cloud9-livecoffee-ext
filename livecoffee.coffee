@@ -94,7 +94,6 @@ define((require, exports, module) ->
             @liveCoffeeCodeOutput = liveCoffeeCodeOutput
             @liveCoffeeOutput = liveCoffeeOutput
             
-        
             liveCoffeeNodes.disable()
             @liveCoffeeNodes = liveCoffeeNodes
             @liveCoffeeNodeOutput = liveCoffeeNodeOutput
