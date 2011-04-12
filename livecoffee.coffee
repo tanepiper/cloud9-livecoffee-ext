@@ -23,7 +23,6 @@ define((require, exports, module) ->
         
         compile: () ->
             editor = editors.currentEditor
-            console.log editor
             doc = editor.getDocument()
             value = doc.getValue()
             
@@ -55,6 +54,7 @@ define((require, exports, module) ->
             return
                     
         init: (amlNode) ->
+            coffeeCode.syntax = 'javascript'
             @coffeeStatusOutput = coffeeStatusOutput
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput

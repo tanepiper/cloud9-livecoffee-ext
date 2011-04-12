@@ -24,7 +24,6 @@
       compile: function() {
         var compiledJS, doc, editor, value;
         editor = editors.currentEditor;
-        console.log(editor);
         doc = editor.getDocument();
         value = doc.getValue();
         compiledJS = '';
@@ -57,6 +56,7 @@
         this.hotitems["livecoffee"] = [this.nodes[0]];
       },
       init: function(amlNode) {
+        coffeeCode.syntax = 'javascript';
         this.coffeeStatusOutput = coffeeStatusOutput;
         this.coffeeCode = coffeeCode;
         this.coffeeOutput = coffeeOutput;
