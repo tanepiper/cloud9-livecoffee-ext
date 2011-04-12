@@ -3,7 +3,6 @@ define((require, exports, module) ->
     ext = require 'core/ext'
     util = require 'core/util'
     editors = require 'ext/editors/editors'
-
     markup = require 'text!ext/livecoffee/livecoffee.xml'
     CoffeeScript = require 'ext/livecoffee/coffeescript'
     
@@ -13,23 +12,18 @@ define((require, exports, module) ->
         type: ext.GENERAL
         alone: yes
         markup: markup
-
         commands:
             "livecoffee": hint: "Compile the current coffeescript document"
-        
         hotitems : {}
-
         nodes: []
          
         compile: () ->
             editor = editors.currentEditor
             doc = editor.getDocument()
             value = doc.getValue()
-            
             compiledJS = ''
             try
                 bare = @coffeeoptBare.checked
-                
                 compiledJS = CoffeeScript.compile value, {bare}
                 @coffeeCode.setValue compiledJS
                 @coffeeCode.$editor.gotoLine editor.ceEditor.line
@@ -55,20 +49,15 @@ define((require, exports, module) ->
 
             @hotitems.livecoffee = [@nodes[0]]
             return
-                    
+            
         init: (amlNode) ->
             coffeeCode.syntax = 'javascript'
-            
-            
             coffeeoptBare.addEventListener 'click', () =>
                 @compile()
-            
-            
+                
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput
             @coffeeoptBare = coffeeoptBare
-            
-            
             return
 
         enable : () ->
@@ -87,7 +76,6 @@ define((require, exports, module) ->
             @nodes.each (item) ->
                 item.destroy true, true
                 return
-            
             @nodes = [];
             @coffeeOutput.destroy true, true
             return
