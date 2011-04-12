@@ -13,7 +13,7 @@ define((require, exports, module) ->
         type: ext.GENERAL
         alone: yes
         markup: markup
-        
+
         commands:
             "livecoffee": hint: "Compile the current coffeescript document"
         
@@ -23,6 +23,7 @@ define((require, exports, module) ->
         
         compile: () ->
             editor = editors.currentEditor
+            console.log editor
             doc = editor.getDocument()
             value = doc.getValue()
             
@@ -32,7 +33,7 @@ define((require, exports, module) ->
                 @coffeeCode.setValue compiledJS
                 return
             catch exp
-                util.alert exp.message
+                @coffeeCode.setValue exp.message
                 return
         
         hook: () ->
@@ -43,10 +44,10 @@ define((require, exports, module) ->
                     ext.initExtension @
                     @compile()
                     @coffeeOutput.show()
-                    
-                    editor = editors.currentEditor
-                    editor.keyup () =>
-                        @compile()
+                    if @coffeeOutput.visible
+                        editor = editors.currentEditor
+                        editor.ceEditor.addEventListener 'keyup', () =>
+                            @compile()
                     
                     return
 

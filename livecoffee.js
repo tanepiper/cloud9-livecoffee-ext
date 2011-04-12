@@ -24,6 +24,7 @@
       compile: function() {
         var compiledJS, doc, editor, value;
         editor = editors.currentEditor;
+        console.log(editor);
         doc = editor.getDocument();
         value = doc.getValue();
         compiledJS = '';
@@ -33,7 +34,7 @@
           });
           this.coffeeCode.setValue(compiledJS);
         } catch (exp) {
-          util.alert(exp.message);
+          this.coffeeCode.setValue(exp.message);
         }
       },
       hook: function() {
@@ -41,9 +42,16 @@
         this.nodes.push(ide.mnuEdit.appendChild(new apf.item({
           caption: 'View CoffeeScript Output',
           onclick: __bind(function() {
+            var editor;
             ext.initExtension(this);
             this.compile();
             this.coffeeOutput.show();
+            if (this.coffeeOutput.visible) {
+              editor = editors.currentEditor;
+              editor.ceEditor.addEventListener('keyup', __bind(function() {
+                return this.compile();
+              }, this));
+            }
           }, this)
         })));
         this.hotitems["livecoffee"] = [this.nodes[0]];
