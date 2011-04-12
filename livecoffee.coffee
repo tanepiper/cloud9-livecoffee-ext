@@ -28,7 +28,9 @@ define((require, exports, module) ->
             
             compiledJS = ''
             try
-                compiledJS = CoffeeScript.compile value, bare: on
+                bare = @coffeeoptBare.checked
+                
+                compiledJS = CoffeeScript.compile value, {bare}
                 @coffeeCode.setValue compiledJS
                 @coffeeCode.$editor.gotoLine editor.ceEditor.line
                 return
@@ -56,9 +58,16 @@ define((require, exports, module) ->
                     
         init: (amlNode) ->
             coffeeCode.syntax = 'javascript'
-            @coffeeStatusOutput = coffeeStatusOutput
+            
+            
+            coffeeoptBare.addEventListener 'click', () =>
+                @compile()
+            
+            
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput
+            @coffeeoptBare = coffeeoptBare
+            
             
             return
 

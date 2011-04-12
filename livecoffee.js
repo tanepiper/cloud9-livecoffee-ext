@@ -22,14 +22,15 @@
       hotitems: {},
       nodes: [],
       compile: function() {
-        var compiledJS, doc, editor, value;
+        var bare, compiledJS, doc, editor, value;
         editor = editors.currentEditor;
         doc = editor.getDocument();
         value = doc.getValue();
         compiledJS = '';
         try {
+          bare = this.coffeeoptBare.checked;
           compiledJS = CoffeeScript.compile(value, {
-            bare: true
+            bare: bare
           });
           this.coffeeCode.setValue(compiledJS);
           this.coffeeCode.$editor.gotoLine(editor.ceEditor.line);
@@ -58,9 +59,12 @@
       },
       init: function(amlNode) {
         coffeeCode.syntax = 'javascript';
-        this.coffeeStatusOutput = coffeeStatusOutput;
+        coffeeoptBare.addEventListener('click', __bind(function() {
+          return this.compile();
+        }, this));
         this.coffeeCode = coffeeCode;
         this.coffeeOutput = coffeeOutput;
+        this.coffeeoptBare = coffeeoptBare;
       },
       enable: function() {
         this.nodes.each(function(item) {
