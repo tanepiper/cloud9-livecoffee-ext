@@ -19,8 +19,8 @@
             height="400" />
         <a:divider />
         <a:hbox pack="end" padding="5" edge="10 10 5 10">
-            <a:button class="ui-btn-green" default="2" caption="View JS" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
-            <a:button onclick="coffeeOutput.hide()">Done</a:button>
+            <a:button class="ui-btn-green" default="2" caption="Update JavaScript" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
+            <a:button onclick="coffeeOutput.hide()">Close</a:button>
         </a:hbox>
         <a:divider />          
         <a:statusbar id="coffeeStatus">

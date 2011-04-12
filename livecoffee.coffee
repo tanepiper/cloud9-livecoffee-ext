@@ -36,7 +36,6 @@ define((require, exports, module) ->
                 return
         
         hook: () ->
-            
             @nodes.push ide.mnuEdit.appendChild new apf.divider()
             @nodes.push ide.mnuEdit.appendChild new apf.item
                 caption: 'View CoffeeScript Output'
@@ -44,6 +43,11 @@ define((require, exports, module) ->
                     ext.initExtension @
                     @compile()
                     @coffeeOutput.show()
+                    
+                    editor = editors.currentEditor
+                    editor.keyup () =>
+                        @compile()
+                    
                     return
 
             @hotitems["livecoffee"] = [@nodes[0]]
