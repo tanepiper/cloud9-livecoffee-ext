@@ -33,7 +33,8 @@
             bare: bare
           });
           this.coffeeCode.setValue(compiledJS);
-          this.coffeeCode.$editor.gotoLine(editor.ceEditor.line);
+          this.coffeeNodes.setValue(CoffeeScript.nodes(value));
+          this.coffeeTokens.setValue(CoffeeScript.tokens(value));
         } catch (exp) {
           this.coffeeCode.setValue(exp.message);
         }
@@ -65,6 +66,8 @@
         this.coffeeCode = coffeeCode;
         this.coffeeOutput = coffeeOutput;
         this.coffeeoptBare = coffeeoptBare;
+        this.coffeeNodes = coffeeNodes;
+        this.coffeeTokens = coffeeTokens;
       },
       enable: function() {
         this.nodes.each(function(item) {

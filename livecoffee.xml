@@ -8,21 +8,47 @@
       kbclose = "true"
       width = "800"
       height = "500">
-        <a:codeeditor
-            id="coffeeCode"
-            flex="1"
-            realtime="true"
-            border="0"
-            showprintmargin="false"
-            printmargincolumn="0"
-            width="780"
-            height="400" />
-        <a:divider />
-        <a:hbox pack="end" padding="5" edge="10 10 5 10">
-            <a:label for="coffeeoptBare">Compile bare?</a:label>
-            <a:checkbox id="coffeeoptBare" />
-            <a:button class="ui-btn-green" default="2" caption="Update JavaScript" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
-            <a:button onclick="coffeeOutput.hide()">Close</a:button>
-        </a:hbox>
+        <a:tab id="coffeeTabs" height="415">
+            <a:page id="coffeeCodeView" caption="Code View">
+                <a:codeeditor
+                    id="coffeeCode"
+                    flex="1"
+                    realtime="true"
+                    border="0"
+                    showprintmargin="false"
+                    printmargincolumn="0"
+                    width="780"
+                    height="340" />
+                    <a:divider />
+                    <a:hbox pack="end" padding="5" edge="10 10 5 10">
+                        <a:label for="coffeeoptBare">Compile bare?</a:label>
+                        <a:checkbox id="coffeeoptBare" />
+                        <a:button class="ui-btn-green" default="2" caption="Update JavaScript" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
+                    </a:hbox>
+            </a:page>
+            <a:page id="coffeeNodeView" caption="Node View">
+                <a:textarea
+                    id="coffeeNodes"
+                    flex="1"
+                    realtime="true"
+                    border="0"
+                    showprintmargin="false"
+                    printmargincolumn="0"
+                    width="780"
+                    height="350" />
+            </a:page>
+            <a:page id="coffeeTokenView" caption="Token View">
+                <a:textarea
+                    id="coffeeTokens"
+                    flex="1"
+                    realtime="true"
+                    border="0"
+                    showprintmargin="false"
+                    printmargincolumn="0"
+                    width="780"
+                    height="350" />
+            </a:page>
+        </a:tab>
+        <a:button onclick="coffeeOutput.hide()">Close</a:button>
     </a:window>
 </a:application>

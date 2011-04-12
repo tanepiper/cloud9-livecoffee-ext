@@ -26,7 +26,11 @@ define((require, exports, module) ->
                 bare = @coffeeoptBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 @coffeeCode.setValue compiledJS
-                @coffeeCode.$editor.gotoLine editor.ceEditor.line
+                #@coffeeCode.$editor.gotoLine editor.ceEditor.line
+                
+                @coffeeNodes.setValue CoffeeScript.nodes value
+                @coffeeTokens.setValue CoffeeScript.tokens value
+                
                 return
             catch exp
                 @coffeeCode.setValue exp.message
@@ -54,10 +58,12 @@ define((require, exports, module) ->
             coffeeCode.syntax = 'javascript'
             coffeeoptBare.addEventListener 'click', () =>
                 @compile()
-                
+             
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput
             @coffeeoptBare = coffeeoptBare
+            @coffeeNodes = coffeeNodes
+            @coffeeTokens = coffeeTokens
             return
 
         enable : () ->
