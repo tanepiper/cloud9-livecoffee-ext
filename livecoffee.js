@@ -19,11 +19,30 @@
           hint: 'Compile the current coffeescript document'
         }
       },
-      hotkeys: {
-        'compile': 1
-      },
       hotitems: {},
       nodes: [],
+      hook: function() {
+        this.nodes.push(mnuEdit.appendChild(new apf.divider()));
+        this.nodes.push(mnuEdit.appendChild(new apf.item({
+          caption: 'LiveCoffee',
+          onclick: __bind(function() {
+            return this.livecoffee();
+          }, this)
+        })));
+        this.hotitems['livecoffee'] = [this.nodes[1]];
+      },
+      livecoffee: function() {
+        var editor;
+        ext.initExtension(this);
+        this.compile();
+        this.liveCoffeeOutput.show();
+        if (this.liveCoffeeOutput.visible) {
+          editor = editors.currentEditor;
+          editor.ceEditor.addEventListener('keyup', __bind(function() {
+            return this.compile();
+          }, this));
+        }
+      },
       compile: function() {
         var bare, compiledJS, doc, editor, value;
         editor = editors.currentEditor;
@@ -48,25 +67,6 @@
         } catch (exp) {
           this.liveCoffeeCodeOutput.setValue(exp.message);
         }
-      },
-      hook: function() {
-        this.nodes.push(ide.mnuEdit.appendChild(new apf.divider()));
-        this.nodes.push(ide.mnuEdit.appendChild(new apf.item({
-          caption: 'LiveCoffee',
-          onclick: __bind(function() {
-            var editor;
-            ext.initExtension(this);
-            this.compile();
-            this.liveCoffeeOutput.show();
-            if (this.liveCoffeeOutput.visible) {
-              editor = editors.currentEditor;
-              editor.ceEditor.addEventListener('keyup', __bind(function() {
-                return this.compile();
-              }, this));
-            }
-          }, this)
-        })));
-        this.hotitems['livecoffee'] = [this.nodes[1]];
       },
       init: function(amlNode) {
         liveCoffeeOptCompileBare.addEventListener('click', __bind(function() {

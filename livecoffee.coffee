@@ -14,10 +14,28 @@ define((require, exports, module) ->
         markup: markup
         commands:
             'livecoffee': hint: 'Compile the current coffeescript document'
-        hotkeys:
-            'compile': 1
         hotitems : {}
         nodes: []
+        
+        hook: () ->
+            @nodes.push mnuEdit.appendChild new apf.divider()
+            @nodes.push mnuEdit.appendChild new apf.item
+                caption: 'LiveCoffee'
+                onclick: () =>
+                   @livecoffee()
+
+            @hotitems['livecoffee'] = [@nodes[1]]
+            return
+            
+        livecoffee: () ->
+            ext.initExtension @
+            @compile()
+            @liveCoffeeOutput.show()
+            if @liveCoffeeOutput.visible
+                editor = editors.currentEditor
+                editor.ceEditor.addEventListener 'keyup', () =>
+                    @compile()
+            return
         
         compile: () ->
             editor = editors.currentEditor
@@ -43,23 +61,7 @@ define((require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue exp.message
                 return
         
-        hook: () ->
-            @nodes.push ide.mnuEdit.appendChild new apf.divider()
-            @nodes.push ide.mnuEdit.appendChild new apf.item
-                caption: 'LiveCoffee'
-                onclick: () =>
-                    ext.initExtension @
-                    @compile()
-                    @liveCoffeeOutput.show()
-                    if @liveCoffeeOutput.visible
-                        editor = editors.currentEditor
-                        editor.ceEditor.addEventListener 'keyup', () =>
-                            @compile()
-                    
-                    return
-
-            @hotitems['livecoffee'] = [@nodes[1]]
-            return
+        
             
         init: (amlNode) ->
             

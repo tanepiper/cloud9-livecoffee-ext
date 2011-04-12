@@ -16,4 +16,25 @@ Open the `Windows -> Extension Manager` window, put the path to the extension in
 
 Click add.  You can now view the window via the Edit menu.
 
+Shortcut Keys & Command
+-----------------------
+This extension comes with the `livecoffee` command that you can type into the
+command area to launch the window.
+
+You can also add shortcut keys to your `ext/keybindings_default` files.  Edit
+`default_win.js` or `default_mac.js` depending on your platform.  To enable
+it add the following:
+
+    return keys.onLoad({
+        "ext" : {
+            "livecoffee": {
+                "livecoffee": "Ctrl-Shift-K"   
+            }
+        }
+    })
+
+For the Mac, use `Command-Option-K`, or choose your own key shortcuts.
+
 Author: Tane Piper <piper.tane@gmail.com>
+
+Thanks to Matt Pardee for helping solve the key and command issues.
