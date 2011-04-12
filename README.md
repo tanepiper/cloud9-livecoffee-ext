@@ -16,6 +16,20 @@ Open the `Windows -> Extension Manager` window, put the path to the extension in
 
 Click add.  You can now view the window via the Edit menu.
 
+Options
+-------
+
+* Approx Line Match: During compile, the live view will match the line numebr of
+the file you are working on. This is an approximate match of the code output
+location. You can also (currently) right click on the .coffee source file to go
+to the same line
+
+* Compile Bare: Compile the output without the surrounding closure
+
+* Compile Nodes: Enable the nodes tab and output the node structure of the code
+
+* Compile Tokens: Enable the tokens tab and output the tokens from the lexer
+
 Shortcut Keys & Command
 -----------------------
 This extension comes with the `livecoffee` command that you can type into the

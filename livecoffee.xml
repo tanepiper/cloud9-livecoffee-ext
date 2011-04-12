@@ -21,16 +21,16 @@
                     height="340" />
                     <a:divider />
                     <a:hbox pack="start" padding="5" edge="10 10 5 10">
-                        <a:label for="liveCoffeeOptMatchLines">Match Lines (buggy)</a:label>
+                        <a:label for="liveCoffeeOptMatchLines">Approx. Line Match</a:label>
                         <a:checkbox id="liveCoffeeOptMatchLines" />
                         
-                        <a:label for="liveCoffeeOptCompileBare">Compile bare?</a:label>
+                        <a:label for="liveCoffeeOptCompileBare">Compile Bare?</a:label>
                         <a:checkbox id="liveCoffeeOptCompileBare" />
                         
-                        <a:label for="liveCoffeeOptCompileNodes">Compile nodes?</a:label>
+                        <a:label for="liveCoffeeOptCompileNodes">Compile Nodes?</a:label>
                         <a:checkbox id="liveCoffeeOptCompileNodes" />
                         
-                        <a:label for="liveCoffeeOptCompileTokens">Compile tokens?</a:label>
+                        <a:label for="liveCoffeeOptCompileTokens">Compile Tokens?</a:label>
                         <a:checkbox id="liveCoffeeOptCompileTokens" />
                     </a:hbox>
             </a:page>
