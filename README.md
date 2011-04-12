@@ -35,6 +35,6 @@ it add the following:
 
 For the Mac, use `Command-Option-K`, or choose your own key shortcuts.
 
-Author: Tane Piper <piper.tane@gmail.com>
+Author: Tane Piper (@tanepiper)
 
 Thanks to Matt Pardee for helping solve the key and command issues.
