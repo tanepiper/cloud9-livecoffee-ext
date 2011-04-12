@@ -122,6 +122,16 @@ define((require, exports, module) ->
                 item.destroy true, true
                 return
             @nodes = [];
+            
+            @liveCoffeeOptCompileBare.destroy true, true
+            @liveCoffeeOptCompileNodes.destroy true, true
+            @liveCoffeeOptCompileTokens.destroy true, true
+            @liveCoffeeOptMatchLines.destroy true, true
+            @liveCoffeeCodeOutput.destroy true, true
             @liveCoffeeOutput.destroy true, true
+            @liveCoffeeNodes.destroy true, true
+            @liveCoffeeNodeOutput.destroy true, true
+            @liveCoffeeTokens.destroy true, true
+            @liveCoffeeTokenOutput.destroy true, true
             return
 )

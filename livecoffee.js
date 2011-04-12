@@ -122,7 +122,16 @@
           item.destroy(true, true);
         });
         this.nodes = [];
+        this.liveCoffeeOptCompileBare.destroy(true, true);
+        this.liveCoffeeOptCompileNodes.destroy(true, true);
+        this.liveCoffeeOptCompileTokens.destroy(true, true);
+        this.liveCoffeeOptMatchLines.destroy(true, true);
+        this.liveCoffeeCodeOutput.destroy(true, true);
         this.liveCoffeeOutput.destroy(true, true);
+        this.liveCoffeeNodes.destroy(true, true);
+        this.liveCoffeeNodeOutput.destroy(true, true);
+        this.liveCoffeeTokens.destroy(true, true);
+        this.liveCoffeeTokenOutput.destroy(true, true);
       }
     });
   });
