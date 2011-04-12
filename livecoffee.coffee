@@ -20,7 +20,7 @@ define((require, exports, module) ->
         hotitems : {}
 
         nodes: []
-        
+         
         compile: () ->
             editor = editors.currentEditor
             doc = editor.getDocument()
@@ -30,6 +30,7 @@ define((require, exports, module) ->
             try
                 compiledJS = CoffeeScript.compile value, bare: on
                 @coffeeCode.setValue compiledJS
+                @coffeeCode.$editor.gotoLine editor.ceEditor.line
                 return
             catch exp
                 @coffeeCode.setValue exp.message
@@ -50,7 +51,7 @@ define((require, exports, module) ->
                     
                     return
 
-            @hotitems["livecoffee"] = [@nodes[0]]
+            @hotitems.livecoffee = [@nodes[0]]
             return
                     
         init: (amlNode) ->
@@ -58,8 +59,9 @@ define((require, exports, module) ->
             @coffeeStatusOutput = coffeeStatusOutput
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput
-            return
             
+            return
+
         enable : () ->
             @nodes.each (item) ->
                 item.enable()
@@ -76,7 +78,7 @@ define((require, exports, module) ->
             @nodes.each (item) ->
                 item.destroy true, true
                 return
-        
+            
             @nodes = [];
             @coffeeOutput.destroy true, true
             return

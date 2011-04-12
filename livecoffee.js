@@ -32,6 +32,7 @@
             bare: true
           });
           this.coffeeCode.setValue(compiledJS);
+          this.coffeeCode.$editor.gotoLine(editor.ceEditor.line);
         } catch (exp) {
           this.coffeeCode.setValue(exp.message);
         }
@@ -53,7 +54,7 @@
             }
           }, this)
         })));
-        this.hotitems["livecoffee"] = [this.nodes[0]];
+        this.hotitems.livecoffee = [this.nodes[0]];
       },
       init: function(amlNode) {
         coffeeCode.syntax = 'javascript';
