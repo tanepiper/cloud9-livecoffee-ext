@@ -7,7 +7,7 @@ define((require, exports, module) ->
     CoffeeScript = require 'ext/livecoffee/coffeescript'
     
     return ext.register 'ext/livecoffee/livecoffee',
-        name: 'Live CoffeeScript'
+        name: 'LiveCoffee'
         dev: 'Tane Piper'
         type: ext.GENERAL
         alone: yes
@@ -23,33 +23,33 @@ define((require, exports, module) ->
             value = doc.getValue()
             compiledJS = ''
             try
-                bare = @coffeeoptBare.checked
+                bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
-                @coffeeCode.setValue compiledJS
+                @liveCoffeeCodeOutput.setValue compiledJS
                 
-                if @coffeeoptMatchLines.checked
-                    @coffeeCode.$editor.gotoLine editor.ceEditor.line
+                if @liveCoffeeOptMatchLines.checked
+                    @liveCoffeeCodeOutput.$editor.gotoLine editor.ceEditor.line
                 
-                if @coffeeoptNodes.checked
-                    @coffeeNodes.setValue CoffeeScript.nodes value
+                if @liveCoffeeOptCompileNodes.checked
+                    @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
                     
-                if @coffeeoptTokens.checked
-                    @coffeeTokens.setValue CoffeeScript.tokens value
+                if @liveCoffeeOptCompileTokens.checked
+                    @liveCoffeeTokenOutput.setValue CoffeeScript.tokens value
                 
                 return
             catch exp
-                @coffeeCode.setValue exp.message
+                @liveCoffeeCodeOutput.setValue exp.message
                 return
         
         hook: () ->
             @nodes.push ide.mnuEdit.appendChild new apf.divider()
             @nodes.push ide.mnuEdit.appendChild new apf.item
-                caption: 'View CoffeeScript Output'
+                caption: 'LiveCoffee'
                 onclick: () =>
                     ext.initExtension @
                     @compile()
-                    @coffeeOutput.show()
-                    if @coffeeOutput.visible
+                    @liveCoffeeOutput.show()
+                    if @liveCoffeeOutput.visible
                         editor = editors.currentEditor
                         editor.ceEditor.addEventListener 'keyup', () =>
                             @compile()
@@ -61,41 +61,40 @@ define((require, exports, module) ->
             
         init: (amlNode) ->
             
-            coffeeoptBare.addEventListener 'click', () =>
+            liveCoffeeOptCompileBare.addEventListener 'click', () =>
                 @compile()
-            @coffeeoptBare = coffeeoptBare
+            @liveCoffeeOptCompileBare = liveCoffeeOptCompileBare
                 
-            coffeeoptNodes.addEventListener 'click', () =>
-                console.log arguments
-                if coffeeoptNodes.checked
-                    @coffeeNodeView.enable()
+            liveCoffeeOptCompileNodes.addEventListener 'click', () =>
+                if liveCoffeeOptCompileNodes.checked
+                    @liveCoffeeNodes.enable()
                     @compile()
                 else
-                    coffeeoptNodes.disable()
-            @coffeeoptNodes = coffeeoptNodes  
+                    liveCoffeeNodes.disable()
+            @liveCoffeeOptCompileNodes = liveCoffeeOptCompileNodes  
                 
-            coffeeoptTokens.addEventListener 'click', () =>
-                if coffeeoptTokens.checked
-                    @coffeeTokenView.enable()
+            liveCoffeeOptCompileTokens.addEventListener 'click', () =>
+                if liveCoffeeOptCompileTokens.checked
+                    @liveCoffeeTokens.enable()
                     @compile()
                 else
-                    @coffeeTokenView.disable()
-            @coffeeoptTokens = coffeeoptTokens
+                    @liveCoffeeTokens.disable()
+            @liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens
                 
-            @coffeeoptMatchLines = coffeeoptMatchLines
+            @liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
             
-            coffeeCode.syntax = 'javascript'
-            @coffeeCode = coffeeCode
-            @coffeeOutput = coffeeOutput
+            liveCoffeeCodeOutput.syntax = 'javascript'
+            @liveCoffeeCodeOutput = liveCoffeeCodeOutput
+            @liveCoffeeOutput = liveCoffeeOutput
             
         
-            coffeeNodeView.disable()
-            @coffeeNodeView = coffeeNodeView
-            @coffeeNodes = coffeeNodes
+            liveCoffeeNodes.disable()
+            @liveCoffeeNodes = liveCoffeeNodes
+            @liveCoffeeNodeOutput = liveCoffeeNodeOutput
             
-            coffeeTokenView.disable()
-            @coffeeTokenView = coffeeTokenView
-            @coffeeTokens = coffeeTokens
+            liveCoffeeTokens.disable()
+            @liveCoffeeTokens = liveCoffeeTokens
+            @liveCoffeeTokenOutput = liveCoffeeTokenOutput
             
             return
 
@@ -116,6 +115,6 @@ define((require, exports, module) ->
                 item.destroy true, true
                 return
             @nodes = [];
-            @coffeeOutput.destroy true, true
+            @liveCoffeeOutput.destroy true, true
             return
 )

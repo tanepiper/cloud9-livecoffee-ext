@@ -1,17 +1,17 @@
 <a:application xmlns:a="http://ajax.org/2005/aml">
     <a:window
-      id = "coffeeOutput"
-      title = "CoffeeScript Output"
+      id = "liveCoffeeOutput"
+      title = "LiveCoffee"
       center = "true"
       modal = "false"
       buttons = "close"
       kbclose = "true"
       width = "800"
       height = "500">
-        <a:tab id="coffeeTabs" height="415">
-            <a:page id="coffeeCodeView" caption="Code View">
+        <a:tab id="liveCoffeeTabs" height="415">
+            <a:page id="liveCoffeeCoffeeScript" caption="CoffeeScript Output">
                 <a:codeeditor
-                    id="coffeeCode"
+                    id="liveCoffeeCodeOutput"
                     flex="1"
                     realtime="true"
                     border="0"
@@ -20,25 +20,23 @@
                     width="780"
                     height="340" />
                     <a:divider />
-                    <a:hbox pack="end" padding="5" edge="10 10 5 10">
-                        <a:label for="coffeeoptMatchLines">Match Lines (buggy)</a:label>
-                        <a:checkbox id="coffeeoptMatchLines" />
+                    <a:hbox pack="start" padding="5" edge="10 10 5 10">
+                        <a:label for="liveCoffeeOptMatchLines">Match Lines (buggy)</a:label>
+                        <a:checkbox id="liveCoffeeOptMatchLines" />
                         
-                        <a:label for="coffeeoptBare">Compile bare?</a:label>
-                        <a:checkbox id="coffeeoptBare" />
+                        <a:label for="liveCoffeeOptCompileBare">Compile bare?</a:label>
+                        <a:checkbox id="liveCoffeeOptCompileBare" />
                         
-                        <a:label for="coffeeoptNodes">Compile nodes?</a:label>
-                        <a:checkbox id="coffeeoptNodes" />
+                        <a:label for="liveCoffeeOptCompileNodes">Compile nodes?</a:label>
+                        <a:checkbox id="liveCoffeeOptCompileNodes" />
                         
-                        <a:label for="coffeeoptTokens">Compile tokens?</a:label>
-                        <a:checkbox id="coffeeoptTokens" />
-                        
-                        <a:button class="ui-btn-green" default="2" caption="Update JavaScript" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
+                        <a:label for="liveCoffeeOptCompileTokens">Compile tokens?</a:label>
+                        <a:checkbox id="liveCoffeeOptCompileTokens" />
                     </a:hbox>
             </a:page>
-            <a:page id="coffeeNodeView" caption="Node View">
+            <a:page id="liveCoffeeNodes" caption="Nodes">
                 <a:textarea
-                    id="coffeeNodes"
+                    id="liveCoffeeNodeOutput"
                     flex="1"
                     realtime="true"
                     border="0"
@@ -47,9 +45,9 @@
                     width="780"
                     height="350" />
             </a:page>
-            <a:page id="coffeeTokenView" caption="Token View">
+            <a:page id="liveCoffeeTokens" caption="Tokens">
                 <a:textarea
-                    id="coffeeTokens"
+                    id="liveCoffeeTokenOutput"
                     flex="1"
                     realtime="true"
                     border="0"
@@ -59,6 +57,6 @@
                     height="350" />
             </a:page>
         </a:tab>
-        <a:button onclick="coffeeOutput.hide()">Close</a:button>
+        <a:button onclick="liveCoffeeOutput.hide()">Close</a:button>
     </a:window>
 </a:application>
