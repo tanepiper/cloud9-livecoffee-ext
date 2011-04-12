@@ -21,8 +21,18 @@
                     height="340" />
                     <a:divider />
                     <a:hbox pack="end" padding="5" edge="10 10 5 10">
+                        <a:label for="coffeeoptMatchLines">Match Lines (buggy)</a:label>
+                        <a:checkbox id="coffeeoptMatchLines" />
+                        
                         <a:label for="coffeeoptBare">Compile bare?</a:label>
                         <a:checkbox id="coffeeoptBare" />
+                        
+                        <a:label for="coffeeoptNodes">Compile nodes?</a:label>
+                        <a:checkbox id="coffeeoptNodes" />
+                        
+                        <a:label for="coffeeoptTokens">Compile tokens?</a:label>
+                        <a:checkbox id="coffeeoptTokens" />
+                        
                         <a:button class="ui-btn-green" default="2" caption="Update JavaScript" onclick = "require('ext/livecoffee/livecoffee').compile();"/>
                     </a:hbox>
             </a:page>

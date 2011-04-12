@@ -16,7 +16,7 @@ define((require, exports, module) ->
             "livecoffee": hint: "Compile the current coffeescript document"
         hotitems : {}
         nodes: []
-         
+        
         compile: () ->
             editor = editors.currentEditor
             doc = editor.getDocument()
@@ -26,10 +26,15 @@ define((require, exports, module) ->
                 bare = @coffeeoptBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 @coffeeCode.setValue compiledJS
-                #@coffeeCode.$editor.gotoLine editor.ceEditor.line
                 
-                @coffeeNodes.setValue CoffeeScript.nodes value
-                @coffeeTokens.setValue CoffeeScript.tokens value
+                if @coffeeoptMatchLines.checked
+                    @coffeeCode.$editor.gotoLine editor.ceEditor.line
+                
+                if @coffeeoptNodes.checked
+                    @coffeeNodes.setValue CoffeeScript.nodes value
+                    
+                if @coffeeoptTokens.checked
+                    @coffeeTokens.setValue CoffeeScript.tokens value
                 
                 return
             catch exp
@@ -55,15 +60,43 @@ define((require, exports, module) ->
             return
             
         init: (amlNode) ->
-            coffeeCode.syntax = 'javascript'
+            
             coffeeoptBare.addEventListener 'click', () =>
                 @compile()
-             
+            @coffeeoptBare = coffeeoptBare
+                
+            coffeeoptNodes.addEventListener 'click', () =>
+                console.log arguments
+                if coffeeoptNodes.checked
+                    @coffeeNodeView.enable()
+                    @compile()
+                else
+                    coffeeoptNodes.disable()
+            @coffeeoptNodes = coffeeoptNodes  
+                
+            coffeeoptTokens.addEventListener 'click', () =>
+                if coffeeoptTokens.checked
+                    @coffeeTokenView.enable()
+                    @compile()
+                else
+                    @coffeeTokenView.disable()
+            @coffeeoptTokens = coffeeoptTokens
+                
+            @coffeeoptMatchLines = coffeeoptMatchLines
+            
+            coffeeCode.syntax = 'javascript'
             @coffeeCode = coffeeCode
             @coffeeOutput = coffeeOutput
-            @coffeeoptBare = coffeeoptBare
+            
+        
+            coffeeNodeView.disable()
+            @coffeeNodeView = coffeeNodeView
             @coffeeNodes = coffeeNodes
+            
+            coffeeTokenView.disable()
+            @coffeeTokenView = coffeeTokenView
             @coffeeTokens = coffeeTokens
+            
             return
 
         enable : () ->

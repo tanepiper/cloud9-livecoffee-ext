@@ -33,8 +33,15 @@
             bare: bare
           });
           this.coffeeCode.setValue(compiledJS);
-          this.coffeeNodes.setValue(CoffeeScript.nodes(value));
-          this.coffeeTokens.setValue(CoffeeScript.tokens(value));
+          if (this.coffeeoptMatchLines.checked) {
+            this.coffeeCode.$editor.gotoLine(editor.ceEditor.line);
+          }
+          if (this.coffeeoptNodes.checked) {
+            this.coffeeNodes.setValue(CoffeeScript.nodes(value));
+          }
+          if (this.coffeeoptTokens.checked) {
+            this.coffeeTokens.setValue(CoffeeScript.tokens(value));
+          }
         } catch (exp) {
           this.coffeeCode.setValue(exp.message);
         }
@@ -59,14 +66,38 @@
         this.hotitems.livecoffee = [this.nodes[0]];
       },
       init: function(amlNode) {
-        coffeeCode.syntax = 'javascript';
         coffeeoptBare.addEventListener('click', __bind(function() {
           return this.compile();
         }, this));
+        this.coffeeoptBare = coffeeoptBare;
+        coffeeoptNodes.addEventListener('click', __bind(function() {
+          console.log(arguments);
+          if (coffeeoptNodes.checked) {
+            this.coffeeNodeView.enable();
+            return this.compile();
+          } else {
+            return coffeeoptNodes.disable();
+          }
+        }, this));
+        this.coffeeoptNodes = coffeeoptNodes;
+        coffeeoptTokens.addEventListener('click', __bind(function() {
+          if (coffeeoptTokens.checked) {
+            this.coffeeTokenView.enable();
+            return this.compile();
+          } else {
+            return this.coffeeTokenView.disable();
+          }
+        }, this));
+        this.coffeeoptTokens = coffeeoptTokens;
+        this.coffeeoptMatchLines = coffeeoptMatchLines;
+        coffeeCode.syntax = 'javascript';
         this.coffeeCode = coffeeCode;
         this.coffeeOutput = coffeeOutput;
-        this.coffeeoptBare = coffeeoptBare;
+        coffeeNodeView.disable();
+        this.coffeeNodeView = coffeeNodeView;
         this.coffeeNodes = coffeeNodes;
+        coffeeTokenView.disable();
+        this.coffeeTokenView = coffeeTokenView;
         this.coffeeTokens = coffeeTokens;
       },
       enable: function() {
