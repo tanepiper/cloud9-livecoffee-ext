@@ -41,7 +41,7 @@
           editor.ceEditor.addEventListener('keyup', __bind(function() {
             return this.compile();
           }, this));
-          editor.ceEditor.addEventListener('contextmenu', __bind(function() {
+          editor.ceEditor.$ext.addEventListener('click', __bind(function() {
             if (this.liveCoffeeOptMatchLines.checked) {
               return this.liveCoffeeCodeOutput.$editor.gotoLine(editor.ceEditor.line);
             }

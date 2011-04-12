@@ -35,7 +35,7 @@ define((require, exports, module) ->
                 editor = editors.currentEditor
                 editor.ceEditor.addEventListener 'keyup', () =>
                     @compile()
-                editor.ceEditor.addEventListener 'contextmenu', () =>
+                editor.ceEditor.$ext.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
                         @liveCoffeeCodeOutput.$editor.gotoLine editor.ceEditor.line
             return
