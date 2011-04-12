@@ -36,14 +36,17 @@ define((require, exports, module) ->
                 return
         
         hook: () ->
+            
+            @nodes.push ide.mnuEdit.appendChild new apf.divider()
             @nodes.push ide.mnuEdit.appendChild new apf.item
                 caption: 'View CoffeeScript Output'
                 onclick: () =>
                     ext.initExtension @
+                    @compile()
                     @coffeeOutput.show()
                     return
-                    
-            @hotitems["compile"] = [@nodes[0]]
+
+            @hotitems["livecoffee"] = [@nodes[0]]
             return
                     
         init: (amlNode) ->

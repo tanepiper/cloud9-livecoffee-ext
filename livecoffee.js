@@ -37,14 +37,16 @@
         }
       },
       hook: function() {
+        this.nodes.push(ide.mnuEdit.appendChild(new apf.divider()));
         this.nodes.push(ide.mnuEdit.appendChild(new apf.item({
           caption: 'View CoffeeScript Output',
           onclick: __bind(function() {
             ext.initExtension(this);
+            this.compile();
             this.coffeeOutput.show();
           }, this)
         })));
-        this.hotitems["compile"] = [this.nodes[0]];
+        this.hotitems["livecoffee"] = [this.nodes[0]];
       },
       init: function(amlNode) {
         this.coffeeStatusOutput = coffeeStatusOutput;
