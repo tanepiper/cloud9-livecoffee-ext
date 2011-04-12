@@ -4,7 +4,7 @@ define((require, exports, module) ->
     util = require 'core/util'
     editors = require 'ext/editors/editors'
     markup = require 'text!ext/livecoffee/livecoffee.xml'
-    CoffeeScript = require 'ext/livecoffee/coffeescript'
+    CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
     
     return ext.register 'ext/livecoffee/livecoffee',
         name: 'LiveCoffee'
