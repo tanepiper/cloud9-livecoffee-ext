@@ -13,7 +13,9 @@ define((require, exports, module) ->
         alone: yes
         markup: markup
         commands:
-            "livecoffee": hint: "Compile the current coffeescript document"
+            'livecoffee': hint: 'Compile the current coffeescript document'
+        hotkeys:
+            'compile': 1
         hotitems : {}
         nodes: []
         
@@ -56,7 +58,7 @@ define((require, exports, module) ->
                     
                     return
 
-            @hotitems.livecoffee = [@nodes[0]]
+            @hotitems['livecoffee'] = [@nodes[1]]
             return
             
         init: (amlNode) ->

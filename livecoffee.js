@@ -15,9 +15,12 @@
       alone: true,
       markup: markup,
       commands: {
-        "livecoffee": {
-          hint: "Compile the current coffeescript document"
+        'livecoffee': {
+          hint: 'Compile the current coffeescript document'
         }
+      },
+      hotkeys: {
+        'compile': 1
       },
       hotitems: {},
       nodes: [],
@@ -63,7 +66,7 @@
             }
           }, this)
         })));
-        this.hotitems.livecoffee = [this.nodes[0]];
+        this.hotitems['livecoffee'] = [this.nodes[1]];
       },
       init: function(amlNode) {
         liveCoffeeOptCompileBare.addEventListener('click', __bind(function() {
