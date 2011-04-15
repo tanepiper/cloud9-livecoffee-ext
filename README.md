@@ -9,6 +9,11 @@ not closure) on or off via a checkbox.
 
 Installation
 ------------
+
+This extension currently only works with self-hosted copies of Cloud9 (either via
+cloning `https://github.com/ajaxorg/cloud9` or `npm install cloud9`).  Third-party
+extensions are not supported on c9.io.
+
     git clone git://github.com/tanepiper/cloud9-livecoffee-ext.git cloud9/client/ext/livecoffee
 
 Open the `Windows -> Extension Manager` window, put the path to the extension in
