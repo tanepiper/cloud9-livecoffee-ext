@@ -57,3 +57,7 @@ For the Mac, use `Command-Option-K`, or choose your own key shortcuts.
 Author: Tane Piper (@tanepiper)
 
 Thanks to Matt Pardee for helping solve the key and command issues.
+
+Screenshot
+----------
+![A picture of Livecoffee](http://dl.dropbox.com/u/147175/livecoffee.png)
