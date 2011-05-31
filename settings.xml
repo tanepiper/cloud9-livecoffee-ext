@@ -1,0 +1,17 @@
+<a:application xmlns:a="http://ajax.org/2005/aml">
+    <div class="header">
+        <span></span><div>LiveCoffee</div>
+    </div>
+    <a:checkbox class="underlined" label="Approx. Line Match"
+        checked="{[livecoffee/livecoffee/@matchLines] != '' ? [livecoffee/livecoffee/@matchLines] : 'true'}"
+        value="[livecoffee/livecoffee/@matchLines]" />
+    <a:checkbox class="underlined" label="Compile Bare?"
+        checked="{[livecoffee/livecoffee/@compileBare] != '' ? [beautify/jsbeautify/@compileBare] : 'false'}"
+        value="[livecoffee/livecoffee/@compileBare]" />
+    <a:checkbox class="underlined" label="Compile Nodes?"
+        checked="{[livecoffee/livecoffee/@compileNodes] != '' ? [beautify/jsbeautify/@compileNodes] : 'false'}"
+        value="[livecoffee/livecoffee/@compileNodes]" />
+    <a:checkbox class="underlined" label="Compile Tokens?"
+        checked="{[livecoffee/livecoffee/@compileTokens] != '' ? [beautify/jsbeautify/@compileTokens] : 'false'}"
+        value="[livecoffee/livecoffee/@compileTokens]" />
+</a:application>

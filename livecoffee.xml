@@ -1,62 +1,46 @@
 <a:application xmlns:a="http://ajax.org/2005/aml">
-    <a:window
-      id = "liveCoffeeOutput"
-      title = "LiveCoffee"
-      center = "true"
-      modal = "false"
-      buttons = "close"
-      kbclose = "true"
-      width = "800"
-      height = "500">
-        <a:tab id="liveCoffeeTabs" height="415">
-            <a:page id="liveCoffeeCoffeeScript" caption="CoffeeScript Output">
-                <a:codeeditor
-                    id="liveCoffeeCodeOutput"
-                    flex="1"
-                    realtime="true"
-                    border="0"
-                    showprintmargin="false"
-                    printmargincolumn="0"
-                    width="780"
-                    height="340" />
-                    <a:divider />
-                    <a:hbox pack="start" padding="5" edge="10 10 5 10">
-                        <a:label for="liveCoffeeOptMatchLines">Approx. Line Match</a:label>
-                        <a:checkbox id="liveCoffeeOptMatchLines" />
-                        
-                        <a:label for="liveCoffeeOptCompileBare">Compile Bare?</a:label>
-                        <a:checkbox id="liveCoffeeOptCompileBare" />
-                        
-                        <a:label for="liveCoffeeOptCompileNodes">Compile Nodes?</a:label>
-                        <a:checkbox id="liveCoffeeOptCompileNodes" />
-                        
-                        <a:label for="liveCoffeeOptCompileTokens">Compile Tokens?</a:label>
-                        <a:checkbox id="liveCoffeeOptCompileTokens" />
-                    </a:hbox>
-            </a:page>
-            <a:page id="liveCoffeeNodes" caption="Nodes">
-                <a:textarea
-                    id="liveCoffeeNodeOutput"
-                    flex="1"
-                    realtime="true"
-                    border="0"
-                    showprintmargin="false"
-                    printmargincolumn="0"
-                    width="780"
-                    height="350" />
-            </a:page>
-            <a:page id="liveCoffeeTokens" caption="Tokens">
-                <a:textarea
-                    id="liveCoffeeTokenOutput"
-                    flex="1"
-                    realtime="true"
-                    border="0"
-                    showprintmargin="false"
-                    printmargincolumn="0"
-                    width="780"
-                    height="350" />
-            </a:page>
-        </a:tab>
-        <a:button onclick="liveCoffeeOutput.hide()">Close</a:button>
-    </a:window>
+    <a:tab id="tabLivecoffee" skin="docktab" visible="false">
+        <a:page id="livecoffeeCode" caption="CoffeeScript">
+            <a:codeeditor
+                id              = "livecoffeeCodeOutput"
+                flex            = "1"
+                realtime        = "true"
+                disabled        = "true"
+                border          = "0"
+                showprintmargin = "false"
+                printmargincolumn   = "0"
+                width           = "100%"
+                height          = "100%"
+                model           = "{require('ext/settings/settings').model}"
+                softtabs        = "[{require('ext/settings/settings').model}::editors/code/@softtabs]"
+                tabsize         = "[{require('ext/settings/settings').model}::editors/code/@tabsize]"
+                scrollspeed     = "[{require('ext/settings/settings').model}::editors/code/@scrollspeed]"
+                theme           = "[{require('ext/settings/settings').model}::editors/code/@theme]"
+                selectstyle     = "[{require('ext/settings/settings').model}::editors/code/@selectstyle]"
+                activeline      = "[{require('ext/settings/settings').model}::editors/code/@activeline]"
+                showinvisibles  = "[{require('ext/settings/settings').model}::editors/code/@showinvisibles]" />
+        </a:page>
+        <a:page id="livecoffeeNodes" caption="Nodes">
+            <a:textarea
+                id              = "livecoffeeNodesOutput"
+                flex            = "1"
+                realtime        = "true"
+                border          = "0"
+                showprintmargin = "false"
+                printmargincolumn   = "0"
+                width           = "100%"
+                height          = "100%" />
+        </a:page>
+        <a:page id="livecoffeeTokens" caption="Tokens">
+            <a:textarea
+                id              = "livecoffeeTokensOutput"
+                flex            = "1"
+                realtime        = "true"
+                border          = "0"
+                showprintmargin = "false"
+                printmargincolumn   = "0"
+                width           = "100%"
+                height          = "100%" />
+        </a:page>
+    </a:tab>
 </a:application>

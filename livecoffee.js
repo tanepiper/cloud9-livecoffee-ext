@@ -1,138 +1,148 @@
-(function() {
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  define(function(require, exports, module) {
-    var CoffeeScript, editors, ext, ide, markup, util;
-    ide = require('core/ide');
-    ext = require('core/ext');
-    util = require('core/util');
-    editors = require('ext/editors/editors');
-    markup = require('text!ext/livecoffee/livecoffee.xml');
-    CoffeeScript = require('ext/livecoffee/vendor/coffeescript');
+define(function(require, exports, module) {
+    
+    var ide             = require('core/ide');
+    var ext             = require('core/ext');
+    var util            = require('core/util');
+    var dock            = require('ext/dockpanel/dockpanel');
+    var editors         = require('ext/editors/editors');
+    var markup          = require('text!ext/livecoffee/livecoffee.xml');
+    var settings        = require('text!ext/livecoffee/settings.xml');
+    var extSettings     = require("ext/settings/settings");
+    var CoffeeScript    = require('ext/livecoffee/vendor/coffeescript');
+    
+    
     return ext.register('ext/livecoffee/livecoffee', {
-      name: 'LiveCoffee',
-      dev: 'Tane Piper',
-      type: ext.GENERAL,
-      alone: true,
-      markup: markup,
-      commands: {
-        'livecoffee': {
-          hint: 'Compile the current coffeescript document'
-        }
-      },
-      hotitems: {},
-      nodes: [],
-      hook: function() {
-        this.nodes.push(mnuEdit.appendChild(new apf.divider()));
-        this.nodes.push(mnuEdit.appendChild(new apf.item({
-          caption: 'LiveCoffee',
-          onclick: __bind(function() {
-            return this.livecoffee();
-          }, this)
-        })));
-        this.hotitems['livecoffee'] = [this.nodes[1]];
-      },
-      livecoffee: function() {
-        var editor;
-        ext.initExtension(this);
-        this.compile();
-        this.liveCoffeeOutput.show();
-        if (this.liveCoffeeOutput.visible) {
-          editor = editors.currentEditor;
-          editor.ceEditor.addEventListener('keyup', __bind(function() {
-            return this.compile();
-          }, this));
-          editor.ceEditor.$ext.addEventListener('click', __bind(function() {
-            if (this.liveCoffeeOptMatchLines.checked) {
-              return this.liveCoffeeCodeOutput.$editor.gotoLine(editor.ceEditor.line);
+        name: 'LiveCoffee',
+        dev: 'Tane Piper',
+        type: ext.GENERAL,
+        alone: true,
+        markup: markup,
+        commands: {
+            'livecoffee': {
+                hint: 'Compile the current coffeescript document'
             }
-          }, this));
+        },
+        hotitems: {},
+        nodes: [],
+      
+        livecoffee: function() {
+            //ext.initExtension(this);
+            
+            var _self = this;
+            var editor = editors.currentEditor;
+            
+            var matchLine = extSettings.model.queryValue("livecoffee/livecoffee/@matchLines") == "true" ? true : false;
+            editor.ceEditor.addEventListener('keyup', function() {
+                _self.compile();
+            });
+            editor.ceEditor.$ext.addEventListener('click', function() {
+                if (matchLine) {
+                    livecoffeeCode.firstChild.$editor.gotoLine(editor.ceEditor.line);
+                }
+            });
+        },
+      
+        compile: function() {
+            var _self = this;
+            var editor = editors.currentEditor;
+            console.log(editor);
+            var doc = editor.getDocument();
+            var value = doc.getValue();
+        
+            var matchLine = extSettings.model.queryValue("livecoffee/livecoffee/@matchLines") == "true" ? true : false;
+            var compileBare = extSettings.model.queryValue("livecoffee/livecoffee/@compileBare") == "true" ? true : false;
+            var compileNodes = extSettings.model.queryValue("livecoffee/livecoffee/@compileNodes") == "true" ? true : false;
+            var compileTokens = extSettings.model.queryValue("livecoffee/livecoffee/@compileTokens") == "true" ? true : false;
+            
+            try {
+                var compiledJS = CoffeeScript.compile(value, {
+                    bare: compileBare
+                });
+                
+                livecoffeeCode.firstChild.setValue(compiledJS);
+                
+                if (matchLine) {
+                    livecoffeeCode.firstChild.$editor.gotoLine(editor.ceEditor.line);
+                }
+                if (compileNodes) {
+                    livecoffeeNodes.firstChild.setValue(CoffeeScript.nodes(value));
+                }
+                if (compileTokens) {
+                    livecoffeeTokens.firstChild.setValue(CoffeeScript.tokens(value));
+                }
+            } catch (exp) {
+                livecoffeeCode.firstChild.setValue(exp.message);
+            }
+        },
+      
+        hook: function() {
+            var _self = this;
+            
+            var sectionLiveCoffee = dock.getSection("livecoffee");
+            
+            dock.registerPage(sectionLiveCoffee, null, function() {
+               ext.initExtension(_self);
+               livecoffeeCode.firstChild.syntax = 'javascript';
+               return livecoffeeCode;
+            }, {
+                primary: {
+                    backgroundImage: "/static/style/images/debugicons.png",
+                    defaultState: { x: -6, y: -217 },
+                    activeState: { x: -6, y: -217 }
+                }
+            });
+            dock.registerPage(sectionLiveCoffee, null, function() {
+               ext.initExtension(_self);
+               return livecoffeeNodes;
+            }, {
+                primary: {
+                    backgroundImage: "/static/style/images/debugicons.png",
+                    defaultState: { x: -6, y: -217 },
+                    activeState: { x: -6, y: -217 }
+                }
+            });
+            dock.registerPage(sectionLiveCoffee, null, function() {
+               ext.initExtension(_self);
+               return livecoffeeTokens;
+            }, {
+                primary: {
+                    backgroundImage: "/static/style/images/debugicons.png",
+                    defaultState: { x: -6, y: -217 },
+                    activeState: { x: -6, y: -217 }
+                }
+            });
+            
+            this.hotitems.livecoffee = [this.nodes[1]];
+            
+            ide.addEventListener("init.ext/settings/settings", function(e) {
+                e.ext.addSection("livecoffee", _self.name, "livecoffee", function() {});
+                barSettings.insertMarkup(settings);
+            });
+        },
+      
+        init: function(amlNode) {
+            this.livecoffee();
+        },
+      
+        enable: function() {
+            ext.initExtension(this);
+            
+            this.nodes.each(function(item) {
+                item.enable();
+            });
+        },
+      
+        disable: function() {
+            this.nodes.each(function(item) {
+                item.disable();
+            });
+        },
+      
+        destroy: function() {
+            this.nodes.each(function(item) {
+                item.destroy(true, true);
+            });
+            this.nodes = [];
         }
-      },
-      compile: function() {
-        var bare, compiledJS, doc, editor, value;
-        editor = editors.currentEditor;
-        doc = editor.getDocument();
-        value = doc.getValue();
-        compiledJS = '';
-        try {
-          bare = this.liveCoffeeOptCompileBare.checked;
-          compiledJS = CoffeeScript.compile(value, {
-            bare: bare
-          });
-          this.liveCoffeeCodeOutput.setValue(compiledJS);
-          if (this.liveCoffeeOptMatchLines.checked) {
-            this.liveCoffeeCodeOutput.$editor.gotoLine(editor.ceEditor.line);
-          }
-          if (this.liveCoffeeOptCompileNodes.checked) {
-            this.liveCoffeeNodeOutput.setValue(CoffeeScript.nodes(value));
-          }
-          if (this.liveCoffeeOptCompileTokens.checked) {
-            this.liveCoffeeTokenOutput.setValue(CoffeeScript.tokens(value));
-          }
-        } catch (exp) {
-          this.liveCoffeeCodeOutput.setValue(exp.message);
-        }
-      },
-      init: function(amlNode) {
-        liveCoffeeOptCompileBare.addEventListener('click', __bind(function() {
-          return this.compile();
-        }, this));
-        this.liveCoffeeOptCompileBare = liveCoffeeOptCompileBare;
-        liveCoffeeOptCompileNodes.addEventListener('click', __bind(function() {
-          if (liveCoffeeOptCompileNodes.checked) {
-            this.liveCoffeeNodes.enable();
-            return this.compile();
-          } else {
-            return liveCoffeeNodes.disable();
-          }
-        }, this));
-        this.liveCoffeeOptCompileNodes = liveCoffeeOptCompileNodes;
-        liveCoffeeOptCompileTokens.addEventListener('click', __bind(function() {
-          if (liveCoffeeOptCompileTokens.checked) {
-            this.liveCoffeeTokens.enable();
-            return this.compile();
-          } else {
-            return this.liveCoffeeTokens.disable();
-          }
-        }, this));
-        this.liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens;
-        this.liveCoffeeOptMatchLines = liveCoffeeOptMatchLines;
-        liveCoffeeCodeOutput.syntax = 'javascript';
-        this.liveCoffeeCodeOutput = liveCoffeeCodeOutput;
-        this.liveCoffeeOutput = liveCoffeeOutput;
-        liveCoffeeNodes.disable();
-        this.liveCoffeeNodes = liveCoffeeNodes;
-        this.liveCoffeeNodeOutput = liveCoffeeNodeOutput;
-        liveCoffeeTokens.disable();
-        this.liveCoffeeTokens = liveCoffeeTokens;
-        this.liveCoffeeTokenOutput = liveCoffeeTokenOutput;
-      },
-      enable: function() {
-        this.nodes.each(function(item) {
-          item.enable();
-        });
-      },
-      disable: function() {
-        this.nodes.each(function(item) {
-          item.disable();
-        });
-      },
-      destroy: function() {
-        this.nodes.each(function(item) {
-          item.destroy(true, true);
-        });
-        this.nodes = [];
-        this.liveCoffeeOptCompileBare.destroy(true, true);
-        this.liveCoffeeOptCompileNodes.destroy(true, true);
-        this.liveCoffeeOptCompileTokens.destroy(true, true);
-        this.liveCoffeeOptMatchLines.destroy(true, true);
-        this.liveCoffeeCodeOutput.destroy(true, true);
-        this.liveCoffeeOutput.destroy(true, true);
-        this.liveCoffeeNodes.destroy(true, true);
-        this.liveCoffeeNodeOutput.destroy(true, true);
-        this.liveCoffeeTokens.destroy(true, true);
-        this.liveCoffeeTokenOutput.destroy(true, true);
-      }
     });
-  });
-}).call(this);
+});
