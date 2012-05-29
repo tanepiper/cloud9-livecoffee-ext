@@ -4,6 +4,8 @@ define((require, exports, module) ->
     util = require 'core/util'
     editors = require 'ext/editors/editors'
     markup = require 'text!ext/livecoffee/livecoffee.xml'
+    menus = require("ext/menus/menus")
+    commands = require("ext/commands/commands")
     CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
     
     return ext.register 'ext/livecoffee/livecoffee',
@@ -18,11 +20,16 @@ define((require, exports, module) ->
         nodes: []
         
         hook: () ->
-            @nodes.push mnuEdit.appendChild new apf.divider()
-            @nodes.push mnuEdit.appendChild new apf.item
-                caption: 'LiveCoffee'
-                onclick: () =>
-                   @livecoffee()
+            _self = @
+            commands.addCommand(
+                name: "livecoffee"
+                hint: "start livecoffee plugin"
+                bindKey: 
+                    mac: "Command-K"
+                    win: "Ctrl-K"
+                    exec: -> _self.livecoffee()
+            )
+            menus.addItemByPath("Edit/LiveCoffee", new apf.item({command: "livecoffee"}), 100)
 
             @hotitems['livecoffee'] = [@nodes[1]]
             return
