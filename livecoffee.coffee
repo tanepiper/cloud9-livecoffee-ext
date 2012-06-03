@@ -7,6 +7,10 @@ define (require, exports, module) ->
   menus = require "ext/menus/menus" 
   commands = require "ext/commands/commands"
   CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
+  
+  DIVIDER_POSITION = 2100
+  MENU_ENTRY_POSITION = 2200
+  
   return ext.register 'ext/livecoffee/livecoffee',
 			name: 'LiveCoffee'
 			dev: 'Tane Piper'
@@ -28,7 +32,8 @@ define (require, exports, module) ->
 					        win: "Ctrl-K"
 					    exec: -> _self.livecoffee()
 					)
-					menus.addItemByPath("Edit/LiveCoffee", new apf.item({command: "livecoffee"}), 100)
+					menus.addItemByPath("Edit/~", new apf.divider(), DIVIDER_POSITION)
+					menus.addItemByPath("Edit/LiveCoffee", new apf.item({command: "livecoffee"}), MENU_ENTRY_POSITION)
 
 					@hotitems['livecoffee'] = [@nodes[1]]
 					return
