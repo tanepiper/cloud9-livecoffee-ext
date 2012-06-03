@@ -40,10 +40,10 @@
             return _self.livecoffee();
           }
         });
-        menus.addItemByPath("Edit/~", new apf.divider(), DIVIDER_POSITION);
-        menus.addItemByPath("Edit/LiveCoffee", new apf.item({
+        this.nodes.push(menus.addItemByPath("Edit/~", new apf.divider(), DIVIDER_POSITION));
+        this.nodes.push(menus.addItemByPath("Edit/LiveCoffee", new apf.item({
           command: "livecoffee"
-        }), MENU_ENTRY_POSITION);
+        }), MENU_ENTRY_POSITION));
         this.hotitems['livecoffee'] = [this.nodes[1]];
       },
       livecoffee: function() {
@@ -126,13 +126,15 @@
       },
       enable: function() {
         this.nodes.each(function(item) {
-          item.enable();
+          return item.enable();
         });
+        return this.disabled = false;
       },
       disable: function() {
         this.nodes.each(function(item) {
-          item.disable();
+          return item.disable();
         });
+        return this.disabled = true;
       },
       destroy: function() {
         this.nodes.each(function(item) {
