@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, exports, module) {
-    var CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, editors, ext, ide, markup, menus, util;
+    var CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, editors, ext, ide, lineMatching, markup, menus, util;
     ide = require('core/ide');
     ext = require('core/ext');
     util = require('core/util');
@@ -11,6 +11,9 @@
     menus = require("ext/menus/menus");
     commands = require("ext/commands/commands");
     CoffeeScript = require('ext/livecoffee/vendor/coffeescript');
+    console.log(CoffeeScript);
+    lineMatching = require('ext/livecoffee/vendor/cs_js_source_mapping');
+    console.log(lineMatching);
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     return ext.register('ext/livecoffee/livecoffee', {
@@ -59,14 +62,16 @@
             return _this.compile();
           });
           editor.ceEditor.$ext.addEventListener('click', function() {
+            var currentLine;
             if (_this.liveCoffeeOptMatchLines.checked) {
-              return _this.liveCoffeeCodeOutput.$editor.gotoLine(ace.getCursorPosition().row);
+              currentLine = ace.getCursorPosition().row;
+              return _this.liveCoffeeCodeOutput.$editor.gotoLine(_this.findMatchingLine(currentLine, _this.matchingLines));
             }
           });
         }
       },
       compile: function() {
-        var ace, bare, compiledJS, doc, editor, value;
+        var ace, bare, compiledJS, currentLine, doc, editor, value;
         editor = editors.currentEditor;
         ace = editor.amlEditor.$editor;
         doc = editor.getDocument();
@@ -77,9 +82,11 @@
           compiledJS = CoffeeScript.compile(value, {
             bare: bare
           });
+          this.matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
           this.liveCoffeeCodeOutput.setValue(compiledJS);
           if (this.liveCoffeeOptMatchLines.checked) {
-            this.liveCoffeeCodeOutput.$editor.gotoLine(ace.getCursorPosition().row);
+            currentLine = ace.getCursorPosition().row;
+            this.liveCoffeeCodeOutput.$editor.gotoLine(this.findMatchingLine(currentLine, this.matchingLines));
           }
           if (this.liveCoffeeOptCompileNodes.checked) {
             this.liveCoffeeNodeOutput.setValue(CoffeeScript.nodes(value));
@@ -89,6 +96,17 @@
           }
         } catch (exp) {
           this.liveCoffeeCodeOutput.setValue(exp.message);
+        }
+      },
+      findMatchingLine: function(lineNumber, matchingLines) {
+        var line, matchingLine, _i, _len;
+        matchingLine = 1;
+        for (_i = 0, _len = matchingLines.length; _i < _len; _i++) {
+          line = matchingLines[_i];
+          if (lineNumber < line[0]) {
+            return ++matchingLine;
+          }
+          matchingLine = line[1];
         }
       },
       init: function(amlNode) {

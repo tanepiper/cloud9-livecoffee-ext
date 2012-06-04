@@ -1,3 +1,5 @@
+# TODO intercept tab change, then compile!!!!!
+
 define (require, exports, module) ->
     ide = require 'core/ide'
     ext = require 'core/ext'
@@ -7,6 +9,9 @@ define (require, exports, module) ->
     menus = require "ext/menus/menus" 
     commands = require "ext/commands/commands"
     CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
+    console.log CoffeeScript
+    lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
+    console.log lineMatching
     
     DIVIDER_POSITION = 2100
     MENU_ENTRY_POSITION = 2200
@@ -49,7 +54,8 @@ define (require, exports, module) ->
                     @compile()
                 editor.ceEditor.$ext.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
-                        @liveCoffeeCodeOutput.$editor.gotoLine ace.getCursorPosition().row
+                        currentLine = ace.getCursorPosition().row
+                        @liveCoffeeCodeOutput.$editor.gotoLine @findMatchingLine currentLine, @matchingLines
             return
 
         compile: () ->
@@ -61,10 +67,12 @@ define (require, exports, module) ->
             try
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
+                @matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                    @liveCoffeeCodeOutput.$editor.gotoLine ace.getCursorPosition().row
+                    currentLine = ace.getCursorPosition().row
+                    @liveCoffeeCodeOutput.$editor.gotoLine @findMatchingLine currentLine, @matchingLines
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
@@ -77,6 +85,13 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue exp.message
                 return
 
+        findMatchingLine: (lineNumber, matchingLines) ->
+            matchingLine = 1
+            for line in matchingLines
+                if lineNumber < line[0]
+                    # some counting weirdnes therefore ++
+                    return ++matchingLine
+                matchingLine = line[1]
 
                 
         init: (amlNode) ->
