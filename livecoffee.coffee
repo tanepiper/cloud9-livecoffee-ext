@@ -44,15 +44,17 @@ define (require, exports, module) ->
             @liveCoffeeOutput.show()
             if @liveCoffeeOutput.visible
                 editor = editors.currentEditor
+                ace = editor.amlEditor.$editor
                 editor.ceEditor.addEventListener 'keyup', () =>
                     @compile()
                 editor.ceEditor.$ext.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
-                        @liveCoffeeCodeOutput.$editor.gotoLine editor.ceEditor.line
+                        @liveCoffeeCodeOutput.$editor.gotoLine ace.getCursorPosition().row
             return
 
         compile: () ->
             editor = editors.currentEditor
+            ace = editor.amlEditor.$editor
             doc = editor.getDocument()
             value = doc.getValue()
             compiledJS = ''
@@ -62,7 +64,7 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                    @liveCoffeeCodeOutput.$editor.gotoLine editor.ceEditor.line
+                    @liveCoffeeCodeOutput.$editor.gotoLine ace.getCursorPosition().row
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value

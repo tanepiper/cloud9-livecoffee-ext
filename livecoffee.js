@@ -47,26 +47,28 @@
         this.hotitems['livecoffee'] = [this.nodes[1]];
       },
       livecoffee: function() {
-        var editor,
+        var ace, editor,
           _this = this;
         ext.initExtension(this);
         this.compile();
         this.liveCoffeeOutput.show();
         if (this.liveCoffeeOutput.visible) {
           editor = editors.currentEditor;
+          ace = editor.amlEditor.$editor;
           editor.ceEditor.addEventListener('keyup', function() {
             return _this.compile();
           });
           editor.ceEditor.$ext.addEventListener('click', function() {
             if (_this.liveCoffeeOptMatchLines.checked) {
-              return _this.liveCoffeeCodeOutput.$editor.gotoLine(editor.ceEditor.line);
+              return _this.liveCoffeeCodeOutput.$editor.gotoLine(ace.getCursorPosition().row);
             }
           });
         }
       },
       compile: function() {
-        var bare, compiledJS, doc, editor, value;
+        var ace, bare, compiledJS, doc, editor, value;
         editor = editors.currentEditor;
+        ace = editor.amlEditor.$editor;
         doc = editor.getDocument();
         value = doc.getValue();
         compiledJS = '';
@@ -77,7 +79,7 @@
           });
           this.liveCoffeeCodeOutput.setValue(compiledJS);
           if (this.liveCoffeeOptMatchLines.checked) {
-            this.liveCoffeeCodeOutput.$editor.gotoLine(editor.ceEditor.line);
+            this.liveCoffeeCodeOutput.$editor.gotoLine(ace.getCursorPosition().row);
           }
           if (this.liveCoffeeOptCompileNodes.checked) {
             this.liveCoffeeNodeOutput.setValue(CoffeeScript.nodes(value));
