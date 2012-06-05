@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, exports, module) {
-    var CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, editors, ext, ide, lineMatching, markup, menus, util;
+    var CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, css, editors, ext, ide, lineMatching, markup, menus, util;
     ide = require('core/ide');
     ext = require('core/ext');
     util = require('core/util');
@@ -14,6 +14,8 @@
     console.log(CoffeeScript);
     lineMatching = require('ext/livecoffee/vendor/cs_js_source_mapping');
     console.log(lineMatching);
+    css = require("text!ext/livecoffee/livecoffee.css");
+    console.log(css);
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     return ext.register('ext/livecoffee/livecoffee', {
@@ -29,6 +31,7 @@
       },
       hotitems: {},
       nodes: [],
+      css: css,
       hook: function() {
         var _self;
         _self = this;
@@ -111,6 +114,7 @@
       },
       init: function(amlNode) {
         var _this = this;
+        apf.importCssString(css);
         liveCoffeeOptCompileBare.addEventListener('click', function() {
           return _this.compile();
         });

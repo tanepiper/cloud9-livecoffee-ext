@@ -12,6 +12,8 @@ define (require, exports, module) ->
     console.log CoffeeScript
     lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
     console.log lineMatching
+    css = require "text!ext/livecoffee/livecoffee.css"
+    console.log css
     
     DIVIDER_POSITION = 2100
     MENU_ENTRY_POSITION = 2200
@@ -26,6 +28,7 @@ define (require, exports, module) ->
             'livecoffee': hint: 'Compile the current coffeescript document'
         hotitems : {}
         nodes: []
+        css: css
 
         hook: () ->
             _self = @
@@ -73,6 +76,7 @@ define (require, exports, module) ->
                 if @liveCoffeeOptMatchLines.checked
                     currentLine = ace.getCursorPosition().row
                     @liveCoffeeCodeOutput.$editor.gotoLine @findMatchingLine currentLine, @matchingLines
+                    
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
@@ -95,6 +99,7 @@ define (require, exports, module) ->
 
                 
         init: (amlNode) ->
+            apf.importCssString(css);
             
             liveCoffeeOptCompileBare.addEventListener 'click', () =>
                 @compile()
