@@ -15,7 +15,6 @@
     lineMatching = require('ext/livecoffee/vendor/cs_js_source_mapping');
     console.log(lineMatching);
     css = require("text!ext/livecoffee/livecoffee.css");
-    console.log(css);
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     return ext.register('ext/livecoffee/livecoffee', {
@@ -65,16 +64,14 @@
             return _this.compile();
           });
           editor.ceEditor.$ext.addEventListener('click', function() {
-            var currentLine;
             if (_this.liveCoffeeOptMatchLines.checked) {
-              currentLine = ace.getCursorPosition().row;
-              return _this.liveCoffeeCodeOutput.$editor.gotoLine(_this.findMatchingLine(currentLine, _this.matchingLines));
+              return _this.highlightActualBlock(ace);
             }
           });
         }
       },
       compile: function() {
-        var ace, bare, compiledJS, currentLine, doc, editor, value;
+        var ace, bare, compiledJS, doc, editor, value;
         editor = editors.currentEditor;
         ace = editor.amlEditor.$editor;
         doc = editor.getDocument();
@@ -88,8 +85,7 @@
           this.matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
           this.liveCoffeeCodeOutput.setValue(compiledJS);
           if (this.liveCoffeeOptMatchLines.checked) {
-            currentLine = ace.getCursorPosition().row;
-            this.liveCoffeeCodeOutput.$editor.gotoLine(this.findMatchingLine(currentLine, this.matchingLines));
+            this.highlightActualBlock(ace);
           }
           if (this.liveCoffeeOptCompileNodes.checked) {
             this.liveCoffeeNodeOutput.setValue(CoffeeScript.nodes(value));
@@ -101,16 +97,61 @@
           this.liveCoffeeCodeOutput.setValue(exp.message);
         }
       },
-      findMatchingLine: function(lineNumber, matchingLines) {
-        var line, matchingLine, _i, _len;
-        matchingLine = 1;
+      findMatchingBlocks: function(lineNumber, matchingLines) {
+        var line, matchingBlocks, _i, _len;
+        matchingBlocks = {};
         for (_i = 0, _len = matchingLines.length; _i < _len; _i++) {
           line = matchingLines[_i];
           if (lineNumber < line[0]) {
-            return ++matchingLine;
+            matchingBlocks["js_end"] = line[1];
+            matchingBlocks["coffee_end"] = line[0];
+            return matchingBlocks;
           }
-          matchingLine = line[1];
+          matchingBlocks["coffe_start"] = line[0];
+          matchingBlocks["js_start"] = line[1];
         }
+      },
+      highlightActualBlock: function(ace) {
+        var currentLine, lineNumber, matchingBlocks, _i, _j, _k, _l, _len, _len1, _len2, _len3, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results, _results1, _results2;
+        if (this.decoratedJSLines != null) {
+          _ref = this.decoratedJSLines;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            lineNumber = _ref[_i];
+            this.liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration(lineNumber, "tobi");
+          }
+        }
+        if (this.decoratedCoffeeLines != null) {
+          _ref1 = this.decoratedCoffeeLines;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            lineNumber = _ref1[_j];
+            ace.renderer.removeGutterDecoration(lineNumber, "tobi");
+          }
+        }
+        currentLine = ace.getCursorPosition().row;
+        matchingBlocks = this.findMatchingBlocks(currentLine, this.matchingLines);
+        this.liveCoffeeCodeOutput.$editor.gotoLine(matchingBlocks["js_start"] + 1);
+        this.decoratedJSLines = (function() {
+          _results = [];
+          for (var _k = _ref2 = matchingBlocks["js_start"], _ref3 = matchingBlocks["js_end"]; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; _ref2 <= _ref3 ? _k++ : _k--){ _results.push(_k); }
+          return _results;
+        }).apply(this);
+        this.decoratedCoffeeLines = (function() {
+          _results1 = [];
+          for (var _l = _ref4 = matchingBlocks["coffe_start"], _ref5 = matchingBlocks["coffee_end"]; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; _ref4 <= _ref5 ? _l++ : _l--){ _results1.push(_l); }
+          return _results1;
+        }).apply(this);
+        _ref6 = this.decoratedJSLines;
+        for (_m = 0, _len2 = _ref6.length; _m < _len2; _m++) {
+          lineNumber = _ref6[_m];
+          this.liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration(lineNumber, "tobi");
+        }
+        _ref7 = this.decoratedCoffeeLines;
+        _results2 = [];
+        for (_n = 0, _len3 = _ref7.length; _n < _len3; _n++) {
+          lineNumber = _ref7[_n];
+          _results2.push(ace.renderer.addGutterDecoration(lineNumber, "tobi"));
+        }
+        return _results2;
       },
       init: function(amlNode) {
         var _this = this;

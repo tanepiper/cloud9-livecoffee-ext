@@ -13,7 +13,6 @@ define (require, exports, module) ->
     lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
     console.log lineMatching
     css = require "text!ext/livecoffee/livecoffee.css"
-    console.log css
     
     DIVIDER_POSITION = 2100
     MENU_ENTRY_POSITION = 2200
@@ -57,8 +56,7 @@ define (require, exports, module) ->
                     @compile()
                 editor.ceEditor.$ext.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
-                        currentLine = ace.getCursorPosition().row
-                        @liveCoffeeCodeOutput.$editor.gotoLine @findMatchingLine currentLine, @matchingLines
+                        @highlightActualBlock ace
             return
 
         compile: () ->
@@ -74,9 +72,7 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                    currentLine = ace.getCursorPosition().row
-                    @liveCoffeeCodeOutput.$editor.gotoLine @findMatchingLine currentLine, @matchingLines
-                    
+                   @highlightActualBlock(ace)
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
@@ -89,14 +85,36 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue exp.message
                 return
 
-        findMatchingLine: (lineNumber, matchingLines) ->
-            matchingLine = 1
+        findMatchingBlocks: (lineNumber, matchingLines) ->
+            matchingBlocks = {}
             for line in matchingLines
                 if lineNumber < line[0]
                     # some counting weirdnes therefore ++
-                    return ++matchingLine
-                matchingLine = line[1]
-
+                    matchingBlocks["js_end"] = line[1]
+                    matchingBlocks["coffee_end"] = line[0]
+                    return matchingBlocks
+                matchingBlocks["coffe_start"] = line[0]
+                matchingBlocks["js_start"] = line[1]
+                
+        highlightActualBlock: (ace) ->
+            if @decoratedJSLines?
+                for lineNumber in @decoratedJSLines
+                    @liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration lineNumber, "tobi"
+            
+            if @decoratedCoffeeLines?
+                for lineNumber in @decoratedCoffeeLines
+                    ace.renderer.removeGutterDecoration lineNumber, "tobi"
+            
+            currentLine = ace.getCursorPosition().row
+            matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
+            @liveCoffeeCodeOutput.$editor.gotoLine matchingBlocks["js_start"]+1
+            @decoratedJSLines = [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
+            @decoratedCoffeeLines = [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
+            for lineNumber in @decoratedJSLines
+                @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, "tobi"
+            for lineNumber in @decoratedCoffeeLines
+                ace.renderer.addGutterDecoration lineNumber, "tobi"
+            
                 
         init: (amlNode) ->
             apf.importCssString(css);
