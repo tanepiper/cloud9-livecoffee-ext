@@ -97,22 +97,21 @@ define (require, exports, module) ->
                 matchingBlocks["js_start"] = line[1]
                 
         highlightActualBlock: (ace) ->
-            if @decoratedJSLines?
-                for lineNumber in @decoratedJSLines
+            if @decoratedLines?
+                for lineNumber in @decoratedLines["js"]
                     @liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration lineNumber, "tobi"
-            
-            if @decoratedCoffeeLines?
-                for lineNumber in @decoratedCoffeeLines
+                for lineNumber in @decoratedLines["coffee"]
                     ace.renderer.removeGutterDecoration lineNumber, "tobi"
-            
+
             currentLine = ace.getCursorPosition().row
             matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
             @liveCoffeeCodeOutput.$editor.gotoLine matchingBlocks["js_start"]+1
-            @decoratedJSLines = [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
-            @decoratedCoffeeLines = [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
-            for lineNumber in @decoratedJSLines
+            @decoratedLines = {}
+            @decoratedLines["js"] = [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
+            @decoratedLines["coffee"] = [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
+            for lineNumber in @decoratedLines["js"]
                 @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, "tobi"
-            for lineNumber in @decoratedCoffeeLines
+            for lineNumber in @decoratedLines["coffee"]
                 ace.renderer.addGutterDecoration lineNumber, "tobi"
             
                 
