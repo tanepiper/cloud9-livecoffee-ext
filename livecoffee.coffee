@@ -72,7 +72,7 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                   @highlightActualBlock(ace)
+                   @highlightActualBlock ace 
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
