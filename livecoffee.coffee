@@ -106,9 +106,9 @@ define (require, exports, module) ->
             currentLine = ace.getCursorPosition().row
             matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
             @liveCoffeeCodeOutput.$editor.gotoLine matchingBlocks["js_start"]+1
-            @decoratedLines = {}
-            @decoratedLines["js"] = [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
-            @decoratedLines["coffee"] = [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
+            @decoratedLines = 
+            	js: [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
+            	coffee: [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
             for lineNumber in @decoratedLines["js"]
                 @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, "tobi"
             for lineNumber in @decoratedLines["coffee"]

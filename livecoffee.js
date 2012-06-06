@@ -128,17 +128,18 @@
         currentLine = ace.getCursorPosition().row;
         matchingBlocks = this.findMatchingBlocks(currentLine, this.matchingLines);
         this.liveCoffeeCodeOutput.$editor.gotoLine(matchingBlocks["js_start"] + 1);
-        this.decoratedLines = {};
-        this.decoratedLines["js"] = (function() {
-          _results = [];
-          for (var _k = _ref2 = matchingBlocks["js_start"], _ref3 = matchingBlocks["js_end"]; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; _ref2 <= _ref3 ? _k++ : _k--){ _results.push(_k); }
-          return _results;
-        }).apply(this);
-        this.decoratedLines["coffee"] = (function() {
-          _results1 = [];
-          for (var _l = _ref4 = matchingBlocks["coffe_start"], _ref5 = matchingBlocks["coffee_end"]; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; _ref4 <= _ref5 ? _l++ : _l--){ _results1.push(_l); }
-          return _results1;
-        }).apply(this);
+        this.decoratedLines = {
+          js: (function() {
+            _results = [];
+            for (var _k = _ref2 = matchingBlocks["js_start"], _ref3 = matchingBlocks["js_end"]; _ref2 <= _ref3 ? _k < _ref3 : _k > _ref3; _ref2 <= _ref3 ? _k++ : _k--){ _results.push(_k); }
+            return _results;
+          }).apply(this),
+          coffee: (function() {
+            _results1 = [];
+            for (var _l = _ref4 = matchingBlocks["coffe_start"], _ref5 = matchingBlocks["coffee_end"]; _ref4 <= _ref5 ? _l < _ref5 : _l > _ref5; _ref4 <= _ref5 ? _l++ : _l--){ _results1.push(_l); }
+            return _results1;
+          }).apply(this)
+        };
         _ref6 = this.decoratedLines["js"];
         for (_m = 0, _len2 = _ref6.length; _m < _len2; _m++) {
           lineNumber = _ref6[_m];
