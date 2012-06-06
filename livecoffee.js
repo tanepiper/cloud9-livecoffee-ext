@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, exports, module) {
-    var CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, css, editors, ext, ide, lineMatching, markup, menus, util;
+    var CSS_CLASS_NAME, CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, css, editors, ext, ide, lineMatching, markup, menus, util;
     ide = require('core/ide');
     ext = require('core/ext');
     util = require('core/util');
@@ -17,6 +17,7 @@
     css = require("text!ext/livecoffee/livecoffee.css");
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
+    CSS_CLASS_NAME = "livecoffee-highlight";
     return ext.register('ext/livecoffee/livecoffee', {
       name: 'LiveCoffee',
       dev: 'Tane Piper',
@@ -117,12 +118,12 @@
           _ref = this.decoratedLines["js"];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             lineNumber = _ref[_i];
-            this.liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration(lineNumber, "tobi");
+            this.liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME);
           }
           _ref1 = this.decoratedLines["coffee"];
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
             lineNumber = _ref1[_j];
-            ace.renderer.removeGutterDecoration(lineNumber, "tobi");
+            ace.renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME);
           }
         }
         currentLine = ace.getCursorPosition().row;
@@ -143,13 +144,13 @@
         _ref6 = this.decoratedLines["js"];
         for (_m = 0, _len2 = _ref6.length; _m < _len2; _m++) {
           lineNumber = _ref6[_m];
-          this.liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration(lineNumber, "tobi");
+          this.liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME);
         }
         _ref7 = this.decoratedLines["coffee"];
         _results2 = [];
         for (_n = 0, _len3 = _ref7.length; _n < _len3; _n++) {
           lineNumber = _ref7[_n];
-          _results2.push(ace.renderer.addGutterDecoration(lineNumber, "tobi"));
+          _results2.push(ace.renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME));
         }
         return _results2;
       },

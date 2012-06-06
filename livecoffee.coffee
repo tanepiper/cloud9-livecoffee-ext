@@ -16,6 +16,7 @@ define (require, exports, module) ->
     
     DIVIDER_POSITION = 2100
     MENU_ENTRY_POSITION = 2200
+    CSS_CLASS_NAME = "livecoffee-highlight"
     
     return ext.register 'ext/livecoffee/livecoffee',
         name: 'LiveCoffee'
@@ -99,9 +100,9 @@ define (require, exports, module) ->
         highlightActualBlock: (ace) ->
             if @decoratedLines?
                 for lineNumber in @decoratedLines["js"]
-                    @liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration lineNumber, "tobi"
+                    @liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
                 for lineNumber in @decoratedLines["coffee"]
-                    ace.renderer.removeGutterDecoration lineNumber, "tobi"
+                    ace.renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
 
             currentLine = ace.getCursorPosition().row
             matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
@@ -110,9 +111,9 @@ define (require, exports, module) ->
             	js: [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
             	coffee: [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
             for lineNumber in @decoratedLines["js"]
-                @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, "tobi"
+                @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             for lineNumber in @decoratedLines["coffee"]
-                ace.renderer.addGutterDecoration lineNumber, "tobi"
+                ace.renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             
                 
         init: (amlNode) ->
