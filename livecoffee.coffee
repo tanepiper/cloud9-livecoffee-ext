@@ -107,7 +107,7 @@ define (require, exports, module) ->
         highlightBlockFromCoffee: (aceEditor) ->
             @removeHighlightedBlocks()
 
-            currentLine = @aceEditor().getCursorPosition().row
+            currentLine = @getAceEditor().getCursorPosition().row
             matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
             liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
             liveCoffeeEditor.gotoLine matchingBlocks["js_start"]+1
@@ -118,9 +118,9 @@ define (require, exports, module) ->
         removeHighlightedBlocks: ->
             if @decoratedLines?
                 for lineNumber in @decoratedLines["js"]
-                    @liveCoffeeEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
+                    @getLiveCoffeeEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
                 for lineNumber in @decoratedLines["coffee"]
-                    @aceEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
+                    @getAceEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
                     
         decorateBlocks: (matchingBlocks) ->
             @decoratedLines = 
@@ -128,15 +128,15 @@ define (require, exports, module) ->
             	coffee: [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
             	
             for lineNumber in @decoratedLines["js"]
-                @liveCoffeeEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
+                @getLiveCoffeeEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             for lineNumber in @decoratedLines["coffee"]
-                @aceEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
+                @getAceEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             
-        aceEditor: ->
+        getAceEditor: ->
             editor = editors.currentEditor
             aceEditor = editor.amlEditor.$editor
             
-        liveCoffeeEditor: ->
+        getLiveCoffeeEditor: ->
             @liveCoffeeCodeOutput.$editor
            
         init: (amlNode) ->

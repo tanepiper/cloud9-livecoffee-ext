@@ -121,7 +121,7 @@
       highlightBlockFromCoffee: function(aceEditor) {
         var currentLine, liveCoffeeEditor, matchingBlocks;
         this.removeHighlightedBlocks();
-        currentLine = this.aceEditor().getCursorPosition().row;
+        currentLine = this.getAceEditor().getCursorPosition().row;
         matchingBlocks = this.findMatchingBlocks(currentLine, this.matchingLines);
         liveCoffeeEditor = this.liveCoffeeCodeOutput.$editor;
         liveCoffeeEditor.gotoLine(matchingBlocks["js_start"] + 1);
@@ -133,13 +133,13 @@
           _ref = this.decoratedLines["js"];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             lineNumber = _ref[_i];
-            this.liveCoffeeEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME);
+            this.getLiveCoffeeEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME);
           }
           _ref1 = this.decoratedLines["coffee"];
           _results = [];
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
             lineNumber = _ref1[_j];
-            _results.push(this.aceEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME));
+            _results.push(this.getAceEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME));
           }
           return _results;
         }
@@ -161,22 +161,22 @@
         _ref4 = this.decoratedLines["js"];
         for (_k = 0, _len = _ref4.length; _k < _len; _k++) {
           lineNumber = _ref4[_k];
-          this.liveCoffeeEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME);
+          this.getLiveCoffeeEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME);
         }
         _ref5 = this.decoratedLines["coffee"];
         _results2 = [];
         for (_l = 0, _len1 = _ref5.length; _l < _len1; _l++) {
           lineNumber = _ref5[_l];
-          _results2.push(this.aceEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME));
+          _results2.push(this.getAceEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME));
         }
         return _results2;
       },
-      aceEditor: function() {
+      getAceEditor: function() {
         var aceEditor, editor;
         editor = editors.currentEditor;
         return aceEditor = editor.amlEditor.$editor;
       },
-      liveCoffeeEditor: function() {
+      getLiveCoffeeEditor: function() {
         return this.liveCoffeeCodeOutput.$editor;
       },
       init: function(amlNode) {
