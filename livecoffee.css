@@ -1,3 +1,7 @@
 .livecoffee-highlight {
   background-color : red;
 }
+
+.livecoffee-highlight.ace_gutter_active_line {
+	background-color : red;
+}
