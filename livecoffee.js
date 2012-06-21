@@ -182,6 +182,14 @@
       init: function(amlNode) {
         var _this = this;
         apf.importCssString(css);
+        liveCoffeeOptMatchLines.addEventListener('click', function() {
+          if (liveCoffeeOptMatchLines.checked) {
+            return _this.highlightBlockFromCoffee();
+          } else {
+            return _this.removeHighlightedBlocks();
+          }
+        });
+        this.liveCoffeeOptMatchLines = liveCoffeeOptMatchLines;
         liveCoffeeOptCompileBare.addEventListener('click', function() {
           return _this.compile();
         });
@@ -204,7 +212,6 @@
           }
         });
         this.liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens;
-        this.liveCoffeeOptMatchLines = liveCoffeeOptMatchLines;
         liveCoffeeCodeOutput.syntax = 'javascript';
         this.liveCoffeeCodeOutput = liveCoffeeCodeOutput;
         this.liveCoffeeOutput = liveCoffeeOutput;

@@ -142,6 +142,13 @@ define (require, exports, module) ->
         init: (amlNode) ->
             apf.importCssString(css);
             
+            liveCoffeeOptMatchLines.addEventListener 'click', () =>
+                if liveCoffeeOptMatchLines.checked
+                    @highlightBlockFromCoffee() 
+                else
+                    @removeHighlightedBlocks()
+            @liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
+            
             liveCoffeeOptCompileBare.addEventListener 'click', () =>
                 @compile()
             @liveCoffeeOptCompileBare = liveCoffeeOptCompileBare
@@ -162,8 +169,6 @@ define (require, exports, module) ->
                     @liveCoffeeTokens.disable()
             @liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens
                 
-            @liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
-            
             liveCoffeeCodeOutput.syntax = 'javascript'
             @liveCoffeeCodeOutput = liveCoffeeCodeOutput
             @liveCoffeeOutput = liveCoffeeOutput
