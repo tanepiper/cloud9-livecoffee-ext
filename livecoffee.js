@@ -147,21 +147,6 @@
         }
         return matchingBlocks;
       },
-      findMatchingBlocks: function(lineNumber, matchingLines) {
-        var line, matchingBlocks, _i, _len;
-        matchingBlocks = {};
-        console.log(matchingLines);
-        for (_i = 0, _len = matchingLines.length; _i < _len; _i++) {
-          line = matchingLines[_i];
-          if (lineNumber < line[0]) {
-            matchingBlocks["js_end"] = line[1];
-            matchingBlocks["coffee_end"] = line[0];
-            return matchingBlocks;
-          }
-          matchingBlocks["coffe_start"] = line[0];
-          matchingBlocks["js_start"] = line[1];
-        }
-      },
       highlightBlockFromCoffee: function(aceEditor) {
         var currentLine, liveCoffeeEditor;
         this.removeHighlightedBlocks();

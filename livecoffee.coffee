@@ -132,18 +132,6 @@ define (require, exports, module) ->
             
             matchingBlocks
             
-        findMatchingBlocks: (lineNumber, matchingLines) ->
-            matchingBlocks = {}
-            console.log matchingLines
-            for line in matchingLines
-                if lineNumber < line[0]
-                    # some counting weirdnes therefore ++
-                    matchingBlocks["js_end"] = line[1]
-                    matchingBlocks["coffee_end"] = line[0]
-                    return matchingBlocks
-                matchingBlocks["coffe_start"] = line[0]
-                matchingBlocks["js_start"] = line[1]
-        
         # Gets the current line of the main editor (with CoffeeScript code)
         # and highlights the matching block in the compiled JavaScript output        
         highlightBlockFromCoffee: (aceEditor) ->
