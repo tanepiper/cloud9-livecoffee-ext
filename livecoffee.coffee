@@ -18,7 +18,7 @@ define (require, exports, module) ->
     MENU_ENTRY_POSITION = 2200
     CSS_CLASS_NAME = "livecoffee-highlight"
     
-    return ext.register 'ext/livecoffee/livecoffee',
+    module.exports = ext.register 'ext/livecoffee/livecoffee',
         name: 'LiveCoffee'
         dev: 'Tane Piper'
         type: ext.GENERAL
@@ -174,6 +174,13 @@ define (require, exports, module) ->
         init: (amlNode) ->
             apf.importCssString(css);
             
+            liveCoffeeOptMatchLines.addEventListener 'click', () =>
+                if liveCoffeeOptMatchLines.checked
+                    @highlightBlockFromCoffee() 
+                else
+                    @removeHighlightedBlocks()
+            @liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
+            
             liveCoffeeOptCompileBare.addEventListener 'click', () =>
                 @compile()
             @liveCoffeeOptCompileBare = liveCoffeeOptCompileBare
@@ -194,8 +201,6 @@ define (require, exports, module) ->
                     @liveCoffeeTokens.disable()
             @liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens
                 
-            @liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
-            
             liveCoffeeCodeOutput.syntax = 'javascript'
             @liveCoffeeCodeOutput = liveCoffeeCodeOutput
             @liveCoffeeOutput = liveCoffeeOutput
@@ -239,3 +244,8 @@ define (require, exports, module) ->
             @liveCoffeeTokens.destroy true, true
             @liveCoffeeTokenOutput.destroy true, true
             return
+        
+        closeCodeOutput: () ->
+            @liveCoffeeOptMatchLines.uncheck()
+            @removeHighlightedBlocks()
+            @liveCoffeeOutput.hide()

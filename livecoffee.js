@@ -18,7 +18,7 @@
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     CSS_CLASS_NAME = "livecoffee-highlight";
-    return ext.register('ext/livecoffee/livecoffee', {
+    return module.exports = ext.register('ext/livecoffee/livecoffee', {
       name: 'LiveCoffee',
       dev: 'Tane Piper',
       type: ext.GENERAL,
@@ -217,6 +217,14 @@
       init: function(amlNode) {
         var _this = this;
         apf.importCssString(css);
+        liveCoffeeOptMatchLines.addEventListener('click', function() {
+          if (liveCoffeeOptMatchLines.checked) {
+            return _this.highlightBlockFromCoffee();
+          } else {
+            return _this.removeHighlightedBlocks();
+          }
+        });
+        this.liveCoffeeOptMatchLines = liveCoffeeOptMatchLines;
         liveCoffeeOptCompileBare.addEventListener('click', function() {
           return _this.compile();
         });
@@ -239,7 +247,6 @@
           }
         });
         this.liveCoffeeOptCompileTokens = liveCoffeeOptCompileTokens;
-        this.liveCoffeeOptMatchLines = liveCoffeeOptMatchLines;
         liveCoffeeCodeOutput.syntax = 'javascript';
         this.liveCoffeeCodeOutput = liveCoffeeCodeOutput;
         this.liveCoffeeOutput = liveCoffeeOutput;
@@ -277,6 +284,11 @@
         this.liveCoffeeNodeOutput.destroy(true, true);
         this.liveCoffeeTokens.destroy(true, true);
         this.liveCoffeeTokenOutput.destroy(true, true);
+      },
+      closeCodeOutput: function() {
+        this.liveCoffeeOptMatchLines.uncheck();
+        this.removeHighlightedBlocks();
+        return this.liveCoffeeOutput.hide();
       }
     });
   });
