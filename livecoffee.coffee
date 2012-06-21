@@ -18,7 +18,7 @@ define (require, exports, module) ->
     MENU_ENTRY_POSITION = 2200
     CSS_CLASS_NAME = "livecoffee-highlight"
     
-    return ext.register 'ext/livecoffee/livecoffee',
+    module.exports = ext.register 'ext/livecoffee/livecoffee',
         name: 'LiveCoffee'
         dev: 'Tane Piper'
         type: ext.GENERAL
@@ -184,3 +184,8 @@ define (require, exports, module) ->
             @liveCoffeeTokens.destroy true, true
             @liveCoffeeTokenOutput.destroy true, true
             return
+        
+        closeCodeOutput: () ->
+            @liveCoffeeOptMatchLines.uncheck()
+            #@liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
+            @liveCoffeeOutput.hide()

@@ -18,7 +18,7 @@
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     CSS_CLASS_NAME = "livecoffee-highlight";
-    return ext.register('ext/livecoffee/livecoffee', {
+    return module.exports = ext.register('ext/livecoffee/livecoffee', {
       name: 'LiveCoffee',
       dev: 'Tane Piper',
       type: ext.GENERAL,
@@ -217,6 +217,10 @@
         this.liveCoffeeNodeOutput.destroy(true, true);
         this.liveCoffeeTokens.destroy(true, true);
         this.liveCoffeeTokenOutput.destroy(true, true);
+      },
+      closeCodeOutput: function() {
+        this.liveCoffeeOptMatchLines.uncheck();
+        return this.liveCoffeeOutput.hide();
       }
     });
   });
