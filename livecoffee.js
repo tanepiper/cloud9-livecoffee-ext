@@ -90,6 +90,7 @@
             bare: bare
           });
           matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
+          console.log(matchingLines);
           this.matchingBlocks = this.convertMatchingLines(matchingLines);
           console.log(this.matchingBlocks);
           this.liveCoffeeCodeOutput.setValue(compiledJS);
@@ -121,11 +122,19 @@
         return matchingBlocks;
       },
       createBlock: function(currentLine, nextLine) {
+        var jsEnd, jsStart;
+        if (currentLine[1] === nextLine[1]) {
+          jsStart = currentLine[1];
+          jsEnd = currentLine[1];
+        } else {
+          jsStart = currentLine[1] + 1;
+          jsEnd = nextLine[1];
+        }
         return {
           coffee_start: currentLine[0] + 1,
           coffee_end: nextLine[0],
-          js_start: currentLine[1] + 1,
-          js_end: nextLine[1]
+          js_start: jsStart,
+          js_end: jsEnd
         };
       },
       mapLinesToBlocks: function(block, matchingBlocks) {
@@ -156,9 +165,10 @@
       highlightBlockFromCoffee: function(aceEditor) {
         var currentLine, liveCoffeeEditor;
         this.removeHighlightedBlocks();
-        currentLine = this.getAceEditor().getCursorPosition().row;
+        currentLine = this.getAceEditor().getCursorPosition().row + 1;
+        console.log("Current line" + currentLine);
         liveCoffeeEditor = this.liveCoffeeCodeOutput.$editor;
-        liveCoffeeEditor.gotoLine(this.matchingBlocks.fromCoffee[currentLine]["js_start"] + 1);
+        liveCoffeeEditor.gotoLine(this.matchingBlocks.fromCoffee[currentLine]["js_start"]);
         return this.decorateBlocks(this.matchingBlocks.fromCoffee[currentLine]);
       },
       removeHighlightedBlocks: function() {
@@ -167,13 +177,13 @@
           _ref = this.decoratedLines.js;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             jsLineNumber = _ref[_i];
-            this.getLiveCoffeeEditor().renderer.removeGutterDecoration(jsLineNumber, CSS_CLASS_NAME);
+            this.getLiveCoffeeEditor().renderer.removeGutterDecoration(jsLineNumber - 1, CSS_CLASS_NAME);
           }
           _ref1 = this.decoratedLines.coffee;
           _results = [];
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
             coffeeLineNumber = _ref1[_j];
-            _results.push(this.getAceEditor().renderer.removeGutterDecoration(coffeeLineNumber, CSS_CLASS_NAME));
+            _results.push(this.getAceEditor().renderer.removeGutterDecoration(coffeeLineNumber - 1, CSS_CLASS_NAME));
           }
           return _results;
         }
@@ -196,13 +206,13 @@
         _ref4 = this.decoratedLines.js;
         for (_k = 0, _len = _ref4.length; _k < _len; _k++) {
           jsLineNumber = _ref4[_k];
-          this.getLiveCoffeeEditor().renderer.addGutterDecoration(jsLineNumber, CSS_CLASS_NAME);
+          this.getLiveCoffeeEditor().renderer.addGutterDecoration(jsLineNumber - 1, CSS_CLASS_NAME);
         }
         _ref5 = this.decoratedLines.coffee;
         _results2 = [];
         for (_l = 0, _len1 = _ref5.length; _l < _len1; _l++) {
           coffeeLineNumber = _ref5[_l];
-          _results2.push(this.getAceEditor().renderer.addGutterDecoration(coffeeLineNumber, CSS_CLASS_NAME));
+          _results2.push(this.getAceEditor().renderer.addGutterDecoration(coffeeLineNumber - 1, CSS_CLASS_NAME));
         }
         return _results2;
       },

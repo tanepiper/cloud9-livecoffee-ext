@@ -75,6 +75,7 @@ define (require, exports, module) ->
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
+                console.log matchingLines
                 @matchingBlocks = @convertMatchingLines(matchingLines)
                 console.log @matchingBlocks
                 @liveCoffeeCodeOutput.setValue compiledJS
@@ -109,11 +110,18 @@ define (require, exports, module) ->
             matchingBlocks
                 
         createBlock:(currentLine, nextLine) ->
+            if currentLine[1] == nextLine[1]
+              jsStart = currentLine[1]
+              jsEnd = currentLine[1]
+            else
+              jsStart = currentLine[1] + 1
+              jsEnd = nextLine[1]
+        
             # lines get adjusted by + 1 because the library starts counting at 0
             coffee_start: currentLine[0] + 1
             coffee_end: nextLine[0]
-            js_start: currentLine[1] + 1
-            js_end: nextLine[1]
+            js_start: jsStart
+            js_end: jsEnd
             
         mapLinesToBlocks: (block, matchingBlocks) ->
             for coffeeLine in [block.coffee_start..block.coffee_end]
@@ -140,9 +148,10 @@ define (require, exports, module) ->
         highlightBlockFromCoffee: (aceEditor) ->
             @removeHighlightedBlocks()
 
-            currentLine = @getAceEditor().getCursorPosition().row
+            currentLine = @getAceEditor().getCursorPosition().row + 1
+            console.log "Current line" + currentLine
             liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
-            liveCoffeeEditor.gotoLine @matchingBlocks.fromCoffee[currentLine]["js_start"] + 1
+            liveCoffeeEditor.gotoLine @matchingBlocks.fromCoffee[currentLine]["js_start"]
             
             @decorateBlocks @matchingBlocks.fromCoffee[currentLine]
             
@@ -150,9 +159,9 @@ define (require, exports, module) ->
         removeHighlightedBlocks: ->
             if @decoratedLines?
                 for jsLineNumber in @decoratedLines.js
-                    @getLiveCoffeeEditor().renderer.removeGutterDecoration jsLineNumber, CSS_CLASS_NAME
+                    @getLiveCoffeeEditor().renderer.removeGutterDecoration jsLineNumber - 1, CSS_CLASS_NAME
                 for coffeeLineNumber in @decoratedLines.coffee
-                    @getAceEditor().renderer.removeGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
+                    @getAceEditor().renderer.removeGutterDecoration coffeeLineNumber - 1, CSS_CLASS_NAME
                     
         decorateBlocks: (matchingBlock) ->
             console.log matchingBlock
@@ -160,9 +169,10 @@ define (require, exports, module) ->
                 js: [matchingBlock.js_start..matchingBlock.js_end]
                 coffee: [matchingBlock.coffee_start..matchingBlock.coffee_end]
             for jsLineNumber in @decoratedLines.js
-                @getLiveCoffeeEditor().renderer.addGutterDecoration jsLineNumber, CSS_CLASS_NAME
+                @getLiveCoffeeEditor().renderer.addGutterDecoration jsLineNumber - 1, CSS_CLASS_NAME
             for coffeeLineNumber in @decoratedLines.coffee
-                @getAceEditor().renderer.addGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
+                # -1 adjustment for the editor
+                @getAceEditor().renderer.addGutterDecoration coffeeLineNumber - 1, CSS_CLASS_NAME
             
         getAceEditor: ->
             editor = editors.currentEditor
