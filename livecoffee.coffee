@@ -52,17 +52,22 @@ define (require, exports, module) ->
             @liveCoffeeOutput.show()
             if @liveCoffeeOutput.visible
                 editor = editors.currentEditor
-                ace = editor.amlEditor.$editor
+                aceEditor = editor.amlEditor.$editor
+                liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
                 editor.ceEditor.addEventListener 'keyup', () =>
                     @compile()
-                editor.ceEditor.$ext.addEventListener 'click', () =>
+                aceEditor.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
-                        @highlightActualBlock ace
+                        @highlightBlockFromCoffee()
+                liveCoffeeEditor.addEventListener 'click', () =>
+                    if @liveCoffeeOptMatchLines.checked
+                        @highlightActualBlock aceEditor
+                        
             return
 
         compile: () ->
             editor = editors.currentEditor
-            ace = editor.amlEditor.$editor
+            aceEditor = editor.amlEditor.$editor
             doc = editor.getDocument()
             value = doc.getValue()
             compiledJS = ''
@@ -73,7 +78,7 @@ define (require, exports, module) ->
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                   @highlightActualBlock ace 
+                   @highlightActualBlock aceEditor 
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
@@ -96,26 +101,44 @@ define (require, exports, module) ->
                     return matchingBlocks
                 matchingBlocks["coffe_start"] = line[0]
                 matchingBlocks["js_start"] = line[1]
+        
+        # Gets the current line of the main editor (with CoffeeScript code)
+        # and highlights the matching block in the compiled JavaScript output        
+        highlightBlockFromCoffee: (aceEditor) ->
+            @removeHighlightedBlocks()
+
+            currentLine = @getAceEditor().getCursorPosition().row
+            matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
+            liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
+            liveCoffeeEditor.gotoLine matchingBlocks["js_start"]+1
+            
+            @decorateBlocks matchingBlocks
+            
                 
-        highlightActualBlock: (ace) ->
+        removeHighlightedBlocks: ->
             if @decoratedLines?
                 for lineNumber in @decoratedLines["js"]
-                    @liveCoffeeCodeOutput.$editor.renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
+                    @getLiveCoffeeEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
                 for lineNumber in @decoratedLines["coffee"]
-                    ace.renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
-
-            currentLine = ace.getCursorPosition().row
-            matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
-            @liveCoffeeCodeOutput.$editor.gotoLine matchingBlocks["js_start"]+1
+                    @getAceEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
+                    
+        decorateBlocks: (matchingBlocks) ->
             @decoratedLines = 
             	js: [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
             	coffee: [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
+            	
             for lineNumber in @decoratedLines["js"]
-                @liveCoffeeCodeOutput.$editor.renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
+                @getLiveCoffeeEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             for lineNumber in @decoratedLines["coffee"]
-                ace.renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
+                @getAceEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
             
-                
+        getAceEditor: ->
+            editor = editors.currentEditor
+            aceEditor = editor.amlEditor.$editor
+            
+        getLiveCoffeeEditor: ->
+            @liveCoffeeCodeOutput.$editor
+           
         init: (amlNode) ->
             apf.importCssString(css);
             
