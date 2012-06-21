@@ -147,14 +147,12 @@
         }
         return matchingBlocks;
       },
-      highlightBlockFromCoffee: function(aceEditor) {
-        var currentLine, liveCoffeeEditor;
+      highlightBlockFromCoffee: function() {
+        var matchingBlock;
         this.removeHighlightedBlocks();
-        currentLine = this.getAceEditor().getCursorPosition().row;
-        console.log("Current line" + currentLine);
-        liveCoffeeEditor = this.liveCoffeeCodeOutput.$editor;
-        liveCoffeeEditor.gotoLine(this.matchingBlocks.fromCoffee[currentLine]["js_start"] + 1);
-        return this.decorateBlocks(this.matchingBlocks.fromCoffee[currentLine]);
+        matchingBlock = this.getMatchingBlock();
+        this.adjustLiveCoffeeCursor(matchingBlock);
+        return this.decorateBlocks(matchingBlock);
       },
       removeHighlightedBlocks: function() {
         var coffeeLineNumber, jsLineNumber, _i, _j, _len, _len1, _ref, _ref1, _results;
@@ -172,6 +170,14 @@
           }
           return _results;
         }
+      },
+      getMatchingBlock: function() {
+        var currentLine, matchingBlock;
+        currentLine = this.getAceEditor().getCursorPosition().row;
+        return matchingBlock = this.matchingBlocks.fromCoffee[currentLine];
+      },
+      adjustLiveCoffeeCursor: function(matchingBlock) {
+        return this.getLiveCoffeeEditor().gotoLine(matchingBlock["js_start"] + 1);
       },
       decorateBlocks: function(matchingBlock) {
         var coffeeLineNumber, jsLineNumber, _i, _j, _k, _l, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;

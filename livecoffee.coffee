@@ -134,15 +134,11 @@ define (require, exports, module) ->
             
         # Gets the current line of the main editor (with CoffeeScript code)
         # and highlights the matching block in the compiled JavaScript output        
-        highlightBlockFromCoffee: (aceEditor) ->
+        highlightBlockFromCoffee: ->
             @removeHighlightedBlocks()
-
-            currentLine = @getAceEditor().getCursorPosition().row
-            console.log "Current line" + currentLine
-            liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
-            liveCoffeeEditor.gotoLine @matchingBlocks.fromCoffee[currentLine]["js_start"] + 1
-            
-            @decorateBlocks @matchingBlocks.fromCoffee[currentLine]
+            matchingBlock = @getMatchingBlock()
+            @adjustLiveCoffeeCursor matchingBlock
+            @decorateBlocks matchingBlock
             
                 
         removeHighlightedBlocks: ->
@@ -151,6 +147,13 @@ define (require, exports, module) ->
                     @getLiveCoffeeEditor().renderer.removeGutterDecoration jsLineNumber, CSS_CLASS_NAME
                 for coffeeLineNumber in @decoratedLines.coffee
                     @getAceEditor().renderer.removeGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
+                    
+        getMatchingBlock: ->
+            currentLine = @getAceEditor().getCursorPosition().row
+            matchingBlock = @matchingBlocks.fromCoffee[currentLine]
+            
+        adjustLiveCoffeeCursor: (matchingBlock) ->
+            @getLiveCoffeeEditor().gotoLine matchingBlock["js_start"] + 1
                     
         decorateBlocks: (matchingBlock) ->
             console.log matchingBlock
