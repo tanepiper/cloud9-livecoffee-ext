@@ -78,7 +78,7 @@
         }
       },
       compile: function() {
-        var aceEditor, bare, compiledJS, doc, editor, value;
+        var aceEditor, bare, compiledJS, doc, editor, matchingLines, value;
         editor = editors.currentEditor;
         aceEditor = editor.amlEditor.$editor;
         doc = editor.getDocument();
@@ -89,7 +89,9 @@
           compiledJS = CoffeeScript.compile(value, {
             bare: bare
           });
-          this.matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
+          matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
+          this.matchingBlocks = this.convertMatchingLines(matchingLines);
+          console.log(this.matchingBlocks);
           this.liveCoffeeCodeOutput.setValue(compiledJS);
           if (this.liveCoffeeOptMatchLines.checked) {
             this.highlightActualBlock(aceEditor);
@@ -104,9 +106,42 @@
           this.liveCoffeeCodeOutput.setValue(exp.message);
         }
       },
+      convertMatchingLines: function(matchingLines) {
+        var block, current_line, i, matchingBlocks, next_line, _i, _ref;
+        matchingBlocks = {
+          fromCoffee: {},
+          fromJS: {}
+        };
+        for (i = _i = 0, _ref = matchingLines.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          current_line = matchingLines[i];
+          next_line = matchingLines[i + 1];
+          block = this.createBlock(current_line, next_line);
+          matchingBlocks = this.mapLinesToBlocks(block, matchingBlocks);
+        }
+        return matchingBlocks;
+      },
+      createBlock: function(currentLine, nextLine) {
+        return {
+          coffee_start: currentLine[0] + 1,
+          coffee_end: nextLine[0],
+          js_start: currentLine[1] + 1,
+          js_end: nextLine[1]
+        };
+      },
+      mapLinesToBlocks: function(block, matchingBlocks) {
+        var coffeeLine, jsLine, _i, _j, _ref, _ref1, _ref2, _ref3;
+        for (coffeeLine = _i = _ref = block.coffee_start, _ref1 = block.coffee_end; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; coffeeLine = _ref <= _ref1 ? ++_i : --_i) {
+          matchingBlocks.fromCoffee[coffeeLine] = block;
+        }
+        for (jsLine = _j = _ref2 = block.js_start, _ref3 = block.js_end; _ref2 <= _ref3 ? _j <= _ref3 : _j >= _ref3; jsLine = _ref2 <= _ref3 ? ++_j : --_j) {
+          matchingBlocks.fromJS[jsLine] = block;
+        }
+        return matchingBlocks;
+      },
       findMatchingBlocks: function(lineNumber, matchingLines) {
         var line, matchingBlocks, _i, _len;
         matchingBlocks = {};
+        console.log(matchingLines);
         for (_i = 0, _len = matchingLines.length; _i < _len; _i++) {
           line = matchingLines[_i];
           if (lineNumber < line[0]) {
@@ -119,55 +154,55 @@
         }
       },
       highlightBlockFromCoffee: function(aceEditor) {
-        var currentLine, liveCoffeeEditor, matchingBlocks;
+        var currentLine, liveCoffeeEditor;
         this.removeHighlightedBlocks();
         currentLine = this.getAceEditor().getCursorPosition().row;
-        matchingBlocks = this.findMatchingBlocks(currentLine, this.matchingLines);
         liveCoffeeEditor = this.liveCoffeeCodeOutput.$editor;
-        liveCoffeeEditor.gotoLine(matchingBlocks["js_start"] + 1);
-        return this.decorateBlocks(matchingBlocks);
+        liveCoffeeEditor.gotoLine(this.matchingBlocks.fromCoffee[currentLine]["js_start"] + 1);
+        return this.decorateBlocks(this.matchingBlocks.fromCoffee[currentLine]);
       },
       removeHighlightedBlocks: function() {
-        var lineNumber, _i, _j, _len, _len1, _ref, _ref1, _results;
+        var coffeeLineNumber, jsLineNumber, _i, _j, _len, _len1, _ref, _ref1, _results;
         if (this.decoratedLines != null) {
-          _ref = this.decoratedLines["js"];
+          _ref = this.decoratedLines.js;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            lineNumber = _ref[_i];
-            this.getLiveCoffeeEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME);
+            jsLineNumber = _ref[_i];
+            this.getLiveCoffeeEditor().renderer.removeGutterDecoration(jsLineNumber, CSS_CLASS_NAME);
           }
-          _ref1 = this.decoratedLines["coffee"];
+          _ref1 = this.decoratedLines.coffee;
           _results = [];
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            lineNumber = _ref1[_j];
-            _results.push(this.getAceEditor().renderer.removeGutterDecoration(lineNumber, CSS_CLASS_NAME));
+            coffeeLineNumber = _ref1[_j];
+            _results.push(this.getAceEditor().renderer.removeGutterDecoration(coffeeLineNumber, CSS_CLASS_NAME));
           }
           return _results;
         }
       },
-      decorateBlocks: function(matchingBlocks) {
-        var lineNumber, _i, _j, _k, _l, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;
+      decorateBlocks: function(matchingBlock) {
+        var coffeeLineNumber, jsLineNumber, _i, _j, _k, _l, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;
+        console.log(matchingBlock);
         this.decoratedLines = {
           js: (function() {
             _results = [];
-            for (var _i = _ref = matchingBlocks["js_start"], _ref1 = matchingBlocks["js_end"]; _ref <= _ref1 ? _i < _ref1 : _i > _ref1; _ref <= _ref1 ? _i++ : _i--){ _results.push(_i); }
+            for (var _i = _ref = matchingBlock.js_start, _ref1 = matchingBlock.js_end; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; _ref <= _ref1 ? _i++ : _i--){ _results.push(_i); }
             return _results;
           }).apply(this),
           coffee: (function() {
             _results1 = [];
-            for (var _j = _ref2 = matchingBlocks["coffe_start"], _ref3 = matchingBlocks["coffee_end"]; _ref2 <= _ref3 ? _j < _ref3 : _j > _ref3; _ref2 <= _ref3 ? _j++ : _j--){ _results1.push(_j); }
+            for (var _j = _ref2 = matchingBlock.coffee_start, _ref3 = matchingBlock.coffee_end; _ref2 <= _ref3 ? _j <= _ref3 : _j >= _ref3; _ref2 <= _ref3 ? _j++ : _j--){ _results1.push(_j); }
             return _results1;
           }).apply(this)
         };
-        _ref4 = this.decoratedLines["js"];
+        _ref4 = this.decoratedLines.js;
         for (_k = 0, _len = _ref4.length; _k < _len; _k++) {
-          lineNumber = _ref4[_k];
-          this.getLiveCoffeeEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME);
+          jsLineNumber = _ref4[_k];
+          this.getLiveCoffeeEditor().renderer.addGutterDecoration(jsLineNumber, CSS_CLASS_NAME);
         }
-        _ref5 = this.decoratedLines["coffee"];
+        _ref5 = this.decoratedLines.coffee;
         _results2 = [];
         for (_l = 0, _len1 = _ref5.length; _l < _len1; _l++) {
-          lineNumber = _ref5[_l];
-          _results2.push(this.getAceEditor().renderer.addGutterDecoration(lineNumber, CSS_CLASS_NAME));
+          coffeeLineNumber = _ref5[_l];
+          _results2.push(this.getAceEditor().renderer.addGutterDecoration(coffeeLineNumber, CSS_CLASS_NAME));
         }
         return _results2;
       },

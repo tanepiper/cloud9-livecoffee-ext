@@ -74,7 +74,9 @@ define (require, exports, module) ->
             try
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
-                @matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
+                matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
+                @matchingBlocks = @convertMatchingLines(matchingLines)
+                console.log @matchingBlocks
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
@@ -90,9 +92,40 @@ define (require, exports, module) ->
             catch exp
                 @liveCoffeeCodeOutput.setValue exp.message
                 return
-
+        
+        # The output from the line matcher isn't totally human readable 
+        # so we make a little conversion with objects   
+        convertMatchingLines: (matchingLines) ->
+            matchingBlocks = 
+                fromCoffee: {}
+                fromJS: {}
+            # I am sorry for this while loop
+            for i in [0...matchingLines.length - 1]
+                current_line = matchingLines[i]
+                next_line = matchingLines[i+1] 
+                block = @createBlock(current_line, next_line)
+                matchingBlocks = @mapLinesToBlocks(block, matchingBlocks)
+            
+            matchingBlocks
+                
+        createBlock:(currentLine, nextLine) ->
+            # lines get adjusted by + 1 because the library starts counting at 0
+            coffee_start: currentLine[0] + 1
+            coffee_end: nextLine[0]
+            js_start: currentLine[1] + 1
+            js_end: nextLine[1]
+            
+        mapLinesToBlocks: (block, matchingBlocks) ->
+            for coffeeLine in [block.coffee_start..block.coffee_end]
+                matchingBlocks.fromCoffee[coffeeLine] = block
+            for jsLine in [block.js_start..block.js_end]
+                matchingBlocks.fromJS[jsLine] = block
+            
+            matchingBlocks
+            
         findMatchingBlocks: (lineNumber, matchingLines) ->
             matchingBlocks = {}
+            console.log matchingLines
             for line in matchingLines
                 if lineNumber < line[0]
                     # some counting weirdnes therefore ++
@@ -108,29 +141,28 @@ define (require, exports, module) ->
             @removeHighlightedBlocks()
 
             currentLine = @getAceEditor().getCursorPosition().row
-            matchingBlocks = @findMatchingBlocks currentLine, @matchingLines
             liveCoffeeEditor = @liveCoffeeCodeOutput.$editor
-            liveCoffeeEditor.gotoLine matchingBlocks["js_start"]+1
+            liveCoffeeEditor.gotoLine @matchingBlocks.fromCoffee[currentLine]["js_start"] + 1
             
-            @decorateBlocks matchingBlocks
+            @decorateBlocks @matchingBlocks.fromCoffee[currentLine]
             
                 
         removeHighlightedBlocks: ->
             if @decoratedLines?
-                for lineNumber in @decoratedLines["js"]
-                    @getLiveCoffeeEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
-                for lineNumber in @decoratedLines["coffee"]
-                    @getAceEditor().renderer.removeGutterDecoration lineNumber, CSS_CLASS_NAME
+                for jsLineNumber in @decoratedLines.js
+                    @getLiveCoffeeEditor().renderer.removeGutterDecoration jsLineNumber, CSS_CLASS_NAME
+                for coffeeLineNumber in @decoratedLines.coffee
+                    @getAceEditor().renderer.removeGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
                     
-        decorateBlocks: (matchingBlocks) ->
-            @decoratedLines = 
-            	js: [matchingBlocks["js_start"]...matchingBlocks["js_end"]]
-            	coffee: [matchingBlocks["coffe_start"]...matchingBlocks["coffee_end"]]
-            	
-            for lineNumber in @decoratedLines["js"]
-                @getLiveCoffeeEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
-            for lineNumber in @decoratedLines["coffee"]
-                @getAceEditor().renderer.addGutterDecoration lineNumber, CSS_CLASS_NAME
+        decorateBlocks: (matchingBlock) ->
+            console.log matchingBlock
+            @decoratedLines =
+                js: [matchingBlock.js_start..matchingBlock.js_end]
+                coffee: [matchingBlock.coffee_start..matchingBlock.coffee_end]
+            for jsLineNumber in @decoratedLines.js
+                @getLiveCoffeeEditor().renderer.addGutterDecoration jsLineNumber, CSS_CLASS_NAME
+            for coffeeLineNumber in @decoratedLines.coffee
+                @getAceEditor().renderer.addGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
             
         getAceEditor: ->
             editor = editors.currentEditor
