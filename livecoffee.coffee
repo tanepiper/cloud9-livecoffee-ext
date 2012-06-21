@@ -61,7 +61,7 @@ define (require, exports, module) ->
                         @highlightBlockFromCoffee()
                 liveCoffeeEditor.addEventListener 'click', () =>
                     if @liveCoffeeOptMatchLines.checked
-                        @highlightActualBlock aceEditor
+                        @highlightBlockFromJS()
                         
             return
 
@@ -75,7 +75,6 @@ define (require, exports, module) ->
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
-                console.log matchingLines
                 @matchingBlocks = @convertMatchingLines(matchingLines)
                 console.log @matchingBlocks
                 @liveCoffeeCodeOutput.setValue compiledJS
@@ -136,8 +135,16 @@ define (require, exports, module) ->
         # and highlights the matching block in the compiled JavaScript output        
         highlightBlockFromCoffee: ->
             @removeHighlightedBlocks()
-            matchingBlock = @getMatchingBlock()
+            matchingBlock = @getMatchingBlockFromCoffee()
             @adjustLiveCoffeeCursor matchingBlock
+            @decorateBlocks matchingBlock
+            
+        # Gets the current line of the liveCoffee Output (compiled JS)
+        # and highlights the matching block in the CoffeeScript main editor       
+        highlightBlockFromJS: ->
+            @removeHighlightedBlocks()
+            matchingBlock = @getMatchingBlockFromJS()
+            @adjustEditorCursor matchingBlock
             @decorateBlocks matchingBlock
             
                 
@@ -148,15 +155,21 @@ define (require, exports, module) ->
                 for coffeeLineNumber in @decoratedLines.coffee
                     @getAceEditor().renderer.removeGutterDecoration coffeeLineNumber, CSS_CLASS_NAME
                     
-        getMatchingBlock: ->
+        getMatchingBlockFromCoffee: ->
             currentLine = @getAceEditor().getCursorPosition().row
             matchingBlock = @matchingBlocks.fromCoffee[currentLine]
             
+        getMatchingBlockFromJS: ->
+            currentLine = @getLiveCoffeeEditor().getCursorPosition().row
+            matchingBlock = @matchingBlocks.fromJS[currentLine]
+            
         adjustLiveCoffeeCursor: (matchingBlock) ->
-            @getLiveCoffeeEditor().gotoLine matchingBlock["js_start"] + 1
+            @getLiveCoffeeEditor().gotoLine matchingBlock.js_start + 1
+            
+        adjustEditorCursor: (matchingBlock) ->
+            @getAceEditor().gotoLine matchingBlock.coffee_start + 1
                     
         decorateBlocks: (matchingBlock) ->
-            console.log matchingBlock
             @decoratedLines =
                 js: [matchingBlock.js_start..matchingBlock.js_end]
                 coffee: [matchingBlock.coffee_start..matchingBlock.coffee_end]

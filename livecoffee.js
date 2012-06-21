@@ -72,7 +72,7 @@
           });
           liveCoffeeEditor.addEventListener('click', function() {
             if (_this.liveCoffeeOptMatchLines.checked) {
-              return _this.highlightActualBlock(aceEditor);
+              return _this.highlightBlockFromJS();
             }
           });
         }
@@ -90,7 +90,6 @@
             bare: bare
           });
           matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
-          console.log(matchingLines);
           this.matchingBlocks = this.convertMatchingLines(matchingLines);
           console.log(this.matchingBlocks);
           this.liveCoffeeCodeOutput.setValue(compiledJS);
@@ -150,8 +149,15 @@
       highlightBlockFromCoffee: function() {
         var matchingBlock;
         this.removeHighlightedBlocks();
-        matchingBlock = this.getMatchingBlock();
+        matchingBlock = this.getMatchingBlockFromCoffee();
         this.adjustLiveCoffeeCursor(matchingBlock);
+        return this.decorateBlocks(matchingBlock);
+      },
+      highlightBlockFromJS: function() {
+        var matchingBlock;
+        this.removeHighlightedBlocks();
+        matchingBlock = this.getMatchingBlockFromJS();
+        this.adjustEditorCursor(matchingBlock);
         return this.decorateBlocks(matchingBlock);
       },
       removeHighlightedBlocks: function() {
@@ -171,17 +177,24 @@
           return _results;
         }
       },
-      getMatchingBlock: function() {
+      getMatchingBlockFromCoffee: function() {
         var currentLine, matchingBlock;
         currentLine = this.getAceEditor().getCursorPosition().row;
         return matchingBlock = this.matchingBlocks.fromCoffee[currentLine];
       },
+      getMatchingBlockFromJS: function() {
+        var currentLine, matchingBlock;
+        currentLine = this.getLiveCoffeeEditor().getCursorPosition().row;
+        return matchingBlock = this.matchingBlocks.fromJS[currentLine];
+      },
       adjustLiveCoffeeCursor: function(matchingBlock) {
-        return this.getLiveCoffeeEditor().gotoLine(matchingBlock["js_start"] + 1);
+        return this.getLiveCoffeeEditor().gotoLine(matchingBlock.js_start + 1);
+      },
+      adjustEditorCursor: function(matchingBlock) {
+        return this.getAceEditor().gotoLine(matchingBlock.coffee_start + 1);
       },
       decorateBlocks: function(matchingBlock) {
         var coffeeLineNumber, jsLineNumber, _i, _j, _k, _l, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results, _results1, _results2;
-        console.log(matchingBlock);
         this.decoratedLines = {
           js: (function() {
             _results = [];
