@@ -210,5 +210,5 @@ define (require, exports, module) ->
         
         closeCodeOutput: () ->
             @liveCoffeeOptMatchLines.uncheck()
-            #@liveCoffeeOptMatchLines = liveCoffeeOptMatchLines
+            @removeHighlightedBlocks()
             @liveCoffeeOutput.hide()

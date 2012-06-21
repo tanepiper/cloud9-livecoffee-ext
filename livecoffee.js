@@ -245,6 +245,7 @@
       },
       closeCodeOutput: function() {
         this.liveCoffeeOptMatchLines.uncheck();
+        this.removeHighlightedBlocks();
         return this.liveCoffeeOutput.hide();
       }
     });
