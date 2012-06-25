@@ -9,9 +9,7 @@ define (require, exports, module) ->
     menus = require "ext/menus/menus" 
     commands = require "ext/commands/commands"
     CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
-    console.log CoffeeScript
     lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
-    console.log lineMatching
     css = require "text!ext/livecoffee/livecoffee.css"
     
     DIVIDER_POSITION = 2100
@@ -75,6 +73,7 @@ define (require, exports, module) ->
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
+                console.log matchingLines
                 @matchingBlocks = @convertMatchingLines(matchingLines)
                 console.log @matchingBlocks
                 @liveCoffeeCodeOutput.setValue compiledJS
@@ -141,9 +140,15 @@ define (require, exports, module) ->
             
         # Gets the current line of the liveCoffee Output (compiled JS)
         # and highlights the matching block in the CoffeeScript main editor       
-        highlightBlockFromJS: ->
+        highlightBlockFromJS: (line = null) ->
             @removeHighlightedBlocks()
-            matchingBlock = @getMatchingBlockFromJS()
+            if line?
+                console.log @matchingBlocks
+                console.log line
+                matchingBlock = @matchingBlocks.fromJS[line]
+                @adjustLiveCoffeeCursor matchingBlock
+            else
+                matchingBlock = @getMatchingBlockFromJS()
             @adjustEditorCursor matchingBlock
             @decorateBlocks matchingBlock
             
@@ -264,3 +269,14 @@ define (require, exports, module) ->
             @liveCoffeeOptMatchLines.uncheck()
             @removeHighlightedBlocks()
             @liveCoffeeOutput.hide()
+            
+        show: (node, line = 0, column = 0) ->
+            ide.dispatchEvent('openfile', {doc: ide.createDocument(node)})
+            line = line - 1 # adjustment 
+            setTimeout (() =>
+                @livecoffee()
+                @liveCoffeeOptMatchLines.check()
+                @getLiveCoffeeEditor().gotoLine 0
+                @highlightBlockFromJS line), 100
+            
+            

@@ -11,9 +11,7 @@
     menus = require("ext/menus/menus");
     commands = require("ext/commands/commands");
     CoffeeScript = require('ext/livecoffee/vendor/coffeescript');
-    console.log(CoffeeScript);
     lineMatching = require('ext/livecoffee/vendor/cs_js_source_mapping');
-    console.log(lineMatching);
     css = require("text!ext/livecoffee/livecoffee.css");
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
@@ -90,6 +88,7 @@
             bare: bare
           });
           matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
+          console.log(matchingLines);
           this.matchingBlocks = this.convertMatchingLines(matchingLines);
           console.log(this.matchingBlocks);
           this.liveCoffeeCodeOutput.setValue(compiledJS);
@@ -153,10 +152,20 @@
         this.adjustLiveCoffeeCursor(matchingBlock);
         return this.decorateBlocks(matchingBlock);
       },
-      highlightBlockFromJS: function() {
+      highlightBlockFromJS: function(line) {
         var matchingBlock;
+        if (line == null) {
+          line = null;
+        }
         this.removeHighlightedBlocks();
-        matchingBlock = this.getMatchingBlockFromJS();
+        if (line != null) {
+          console.log(this.matchingBlocks);
+          console.log(line);
+          matchingBlock = this.matchingBlocks.fromJS[line];
+          this.adjustLiveCoffeeCursor(matchingBlock);
+        } else {
+          matchingBlock = this.getMatchingBlockFromJS();
+        }
         this.adjustEditorCursor(matchingBlock);
         return this.decorateBlocks(matchingBlock);
       },
@@ -303,6 +312,25 @@
         this.liveCoffeeOptMatchLines.uncheck();
         this.removeHighlightedBlocks();
         return this.liveCoffeeOutput.hide();
+      },
+      show: function(node, line, column) {
+        var _this = this;
+        if (line == null) {
+          line = 0;
+        }
+        if (column == null) {
+          column = 0;
+        }
+        ide.dispatchEvent('openfile', {
+          doc: ide.createDocument(node)
+        });
+        line = line - 1;
+        return setTimeout((function() {
+          _this.livecoffee();
+          _this.liveCoffeeOptMatchLines.check();
+          _this.getLiveCoffeeEditor().gotoLine(0);
+          return _this.highlightBlockFromJS(line);
+        }), 100);
       }
     });
   });
