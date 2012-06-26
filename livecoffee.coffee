@@ -12,9 +12,11 @@ define (require, exports, module) ->
     lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
     css = require "text!ext/livecoffee/livecoffee.css"
     
-    DIVIDER_POSITION = 2100
-    MENU_ENTRY_POSITION = 2200
-    CSS_CLASS_NAME = "livecoffee-highlight"
+    DIVIDER_POSITION        = 2100
+    MENU_ENTRY_POSITION     = 2200
+    CSS_CLASS_NAME          = "livecoffee-highlight"
+    OPEN_FILE_TIMEOUT       = 100
+    OPEN_LIVECOFFEE_TIMEOUT = 70
     
     module.exports = ext.register 'ext/livecoffee/livecoffee',
         name: 'LiveCoffee'
@@ -73,13 +75,11 @@ define (require, exports, module) ->
                 bare = @liveCoffeeOptCompileBare.checked
                 compiledJS = CoffeeScript.compile value, {bare}
                 matchingLines = lineMatching.source_line_mappings value.split("\n"), compiledJS.split("\n")
-                console.log matchingLines
                 @matchingBlocks = @convertMatchingLines(matchingLines)
-                console.log @matchingBlocks
                 @liveCoffeeCodeOutput.setValue compiledJS
                 
                 if @liveCoffeeOptMatchLines.checked
-                   @highlightActualBlock aceEditor 
+                   @highlightBlockFromCoffee()
                 
                 if @liveCoffeeOptCompileNodes.checked
                     @liveCoffeeNodeOutput.setValue CoffeeScript.nodes value
@@ -272,11 +272,12 @@ define (require, exports, module) ->
             
         show: (node, line = 0, column = 0) ->
             ide.dispatchEvent('openfile', {doc: ide.createDocument(node)})
-            line = line - 1 # adjustment 
+            line = line - 1 # adjustment from 1-based external format to 0-based internal
             setTimeout (() =>
                 @livecoffee()
                 @liveCoffeeOptMatchLines.check()
-                @getLiveCoffeeEditor().gotoLine 0
-                @highlightBlockFromJS line), 100
+                setTimeout (() =>
+                  @highlightBlockFromJS line), OPEN_LIVECOFFEE_TIMEOUT
+                ), OPEN_FILE_TIMEOUT
             
             

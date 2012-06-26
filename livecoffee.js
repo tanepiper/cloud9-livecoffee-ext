@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, exports, module) {
-    var CSS_CLASS_NAME, CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, commands, css, editors, ext, ide, lineMatching, markup, menus, util;
+    var CSS_CLASS_NAME, CoffeeScript, DIVIDER_POSITION, MENU_ENTRY_POSITION, OPEN_FILE_TIMEOUT, OPEN_LIVECOFFEE_TIMEOUT, commands, css, editors, ext, ide, lineMatching, markup, menus, util;
     ide = require('core/ide');
     ext = require('core/ext');
     util = require('core/util');
@@ -16,6 +16,8 @@
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     CSS_CLASS_NAME = "livecoffee-highlight";
+    OPEN_FILE_TIMEOUT = 100;
+    OPEN_LIVECOFFEE_TIMEOUT = 70;
     return module.exports = ext.register('ext/livecoffee/livecoffee', {
       name: 'LiveCoffee',
       dev: 'Tane Piper',
@@ -88,12 +90,10 @@
             bare: bare
           });
           matchingLines = lineMatching.source_line_mappings(value.split("\n"), compiledJS.split("\n"));
-          console.log(matchingLines);
           this.matchingBlocks = this.convertMatchingLines(matchingLines);
-          console.log(this.matchingBlocks);
           this.liveCoffeeCodeOutput.setValue(compiledJS);
           if (this.liveCoffeeOptMatchLines.checked) {
-            this.highlightActualBlock(aceEditor);
+            this.highlightBlockFromCoffee();
           }
           if (this.liveCoffeeOptCompileNodes.checked) {
             this.liveCoffeeNodeOutput.setValue(CoffeeScript.nodes(value));
@@ -328,9 +328,10 @@
         return setTimeout((function() {
           _this.livecoffee();
           _this.liveCoffeeOptMatchLines.check();
-          _this.getLiveCoffeeEditor().gotoLine(0);
-          return _this.highlightBlockFromJS(line);
-        }), 100);
+          return setTimeout((function() {
+            return _this.highlightBlockFromJS(line);
+          }), OPEN_LIVECOFFEE_TIMEOUT);
+        }), OPEN_FILE_TIMEOUT);
       }
     });
   });
