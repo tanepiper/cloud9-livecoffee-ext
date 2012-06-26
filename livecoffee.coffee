@@ -15,7 +15,7 @@ define (require, exports, module) ->
     DIVIDER_POSITION        = 2100
     MENU_ENTRY_POSITION     = 2200
     CSS_CLASS_NAME          = "livecoffee-highlight"
-    OPEN_FILE_TIMEOUT       = 100
+    OPEN_FILE_TIMEOUT       = 150
     OPEN_LIVECOFFEE_TIMEOUT = 70
     
     module.exports = ext.register 'ext/livecoffee/livecoffee',
@@ -146,6 +146,9 @@ define (require, exports, module) ->
                 console.log @matchingBlocks
                 console.log line
                 matchingBlock = @matchingBlocks.fromJS[line]
+                console.log matchingBlock
+                # evil knievel TODO but sometimes it seems to be null
+                return unless matchingBlock?
                 @adjustLiveCoffeeCursor matchingBlock
             else
                 matchingBlock = @getMatchingBlockFromJS()
@@ -273,11 +276,14 @@ define (require, exports, module) ->
         show: (node, line = 0, column = 0) ->
             ide.dispatchEvent('openfile', {doc: ide.createDocument(node)})
             line = line - 1 # adjustment from 1-based external format to 0-based internal
-            setTimeout (() =>
+            setTimeout (=> @startLiveCoffee(line)), OPEN_FILE_TIMEOUT
+                
+        startLiveCoffee: (line) ->
+            if @liveCoffeeOutput?.visible
+                @compile()
+            else
                 @livecoffee()
-                @liveCoffeeOptMatchLines.check()
-                setTimeout (() =>
-                  @highlightBlockFromJS line), OPEN_LIVECOFFEE_TIMEOUT
-                ), OPEN_FILE_TIMEOUT
+            @liveCoffeeOptMatchLines.check()
+            setTimeout (() => @highlightBlockFromJS line), OPEN_LIVECOFFEE_TIMEOUT
             
             

@@ -16,7 +16,7 @@
     DIVIDER_POSITION = 2100;
     MENU_ENTRY_POSITION = 2200;
     CSS_CLASS_NAME = "livecoffee-highlight";
-    OPEN_FILE_TIMEOUT = 100;
+    OPEN_FILE_TIMEOUT = 150;
     OPEN_LIVECOFFEE_TIMEOUT = 70;
     return module.exports = ext.register('ext/livecoffee/livecoffee', {
       name: 'LiveCoffee',
@@ -162,6 +162,10 @@
           console.log(this.matchingBlocks);
           console.log(line);
           matchingBlock = this.matchingBlocks.fromJS[line];
+          console.log(matchingBlock);
+          if (matchingBlock == null) {
+            return;
+          }
           this.adjustLiveCoffeeCursor(matchingBlock);
         } else {
           matchingBlock = this.getMatchingBlockFromJS();
@@ -326,12 +330,21 @@
         });
         line = line - 1;
         return setTimeout((function() {
-          _this.livecoffee();
-          _this.liveCoffeeOptMatchLines.check();
-          return setTimeout((function() {
-            return _this.highlightBlockFromJS(line);
-          }), OPEN_LIVECOFFEE_TIMEOUT);
+          return _this.startLiveCoffee(line);
         }), OPEN_FILE_TIMEOUT);
+      },
+      startLiveCoffee: function(line) {
+        var _ref,
+          _this = this;
+        if ((_ref = this.liveCoffeeOutput) != null ? _ref.visible : void 0) {
+          this.compile();
+        } else {
+          this.livecoffee();
+        }
+        this.liveCoffeeOptMatchLines.check();
+        return setTimeout((function() {
+          return _this.highlightBlockFromJS(line);
+        }), OPEN_LIVECOFFEE_TIMEOUT);
       }
     });
   });
