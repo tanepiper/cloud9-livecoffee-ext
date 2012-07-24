@@ -317,7 +317,7 @@
         this.removeHighlightedBlocks();
         return this.liveCoffeeOutput.hide();
       },
-      show: function(node, line, column) {
+      show: function(filePath, line, column) {
         var _this = this;
         if (line == null) {
           line = 0;
@@ -326,7 +326,7 @@
           column = 0;
         }
         ide.dispatchEvent('openfile', {
-          doc: ide.createDocument(node)
+          doc: ide.createDocument(require("ext/filesystem/filesystem").createFileNodeFromPath(filePath))
         });
         line = line - 1;
         return setTimeout((function() {

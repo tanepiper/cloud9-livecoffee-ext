@@ -273,8 +273,8 @@ define (require, exports, module) ->
             @removeHighlightedBlocks()
             @liveCoffeeOutput.hide()
             
-        show: (node, line = 0, column = 0) ->
-            ide.dispatchEvent('openfile', {doc: ide.createDocument(node)})
+        show: (filePath, line = 0, column = 0) ->
+            ide.dispatchEvent('openfile', {doc: ide.createDocument(require("ext/filesystem/filesystem").createFileNodeFromPath(filePath))})
             line = line - 1 # adjustment from 1-based external format to 0-based internal
             setTimeout (=> @startLiveCoffee(line)), OPEN_FILE_TIMEOUT
                 
