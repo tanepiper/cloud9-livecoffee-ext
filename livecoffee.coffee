@@ -44,6 +44,9 @@ define (require, exports, module) ->
             @nodes.push menus.addItemByPath("Edit/LiveCoffee", new apf.item({command: "livecoffee"}), MENU_ENTRY_POSITION)
 
             @hotitems['livecoffee'] = [@nodes[1]]
+            
+            ide.addEventListener 'livecoffee_show_file', (lineObject) =>
+              @show lineObject.line
             return
                 
         livecoffee: () ->
@@ -273,8 +276,8 @@ define (require, exports, module) ->
             @removeHighlightedBlocks()
             @liveCoffeeOutput.hide()
             
-        show: (filePath, line = 0, column = 0) ->
-            ide.dispatchEvent('openfile', {doc: ide.createDocument(require("ext/filesystem/filesystem").createFileNodeFromPath(filePath))})
+        show: (line) ->
+            console.log "linenumber is #{line}"
             line = line - 1 # adjustment from 1-based external format to 0-based internal
             setTimeout (=> @startLiveCoffee(line)), OPEN_FILE_TIMEOUT
                 

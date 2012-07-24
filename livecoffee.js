@@ -33,7 +33,8 @@
       nodes: [],
       css: css,
       hook: function() {
-        var _self;
+        var _self,
+          _this = this;
         _self = this;
         commands.addCommand({
           name: "livecoffee",
@@ -51,6 +52,9 @@
           command: "livecoffee"
         }), MENU_ENTRY_POSITION));
         this.hotitems['livecoffee'] = [this.nodes[1]];
+        ide.addEventListener('livecoffee_show_file', function(lineObject) {
+          return _this.show(lineObject.line);
+        });
       },
       livecoffee: function() {
         var aceEditor, editor, liveCoffeeEditor,
@@ -317,17 +321,9 @@
         this.removeHighlightedBlocks();
         return this.liveCoffeeOutput.hide();
       },
-      show: function(filePath, line, column) {
+      show: function(line) {
         var _this = this;
-        if (line == null) {
-          line = 0;
-        }
-        if (column == null) {
-          column = 0;
-        }
-        ide.dispatchEvent('openfile', {
-          doc: ide.createDocument(require("ext/filesystem/filesystem").createFileNodeFromPath(filePath))
-        });
+        console.log("linenumber is " + line);
         line = line - 1;
         return setTimeout((function() {
           return _this.startLiveCoffee(line);
