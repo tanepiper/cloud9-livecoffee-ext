@@ -45,8 +45,8 @@ define (require, exports, module) ->
 
             @hotitems['livecoffee'] = [@nodes[1]]
             
-            ide.addEventListener 'livecoffee_show_file', (lineObject) =>
-              @show lineObject.line
+            ide.addEventListener 'livecoffee_show_file', (options) =>
+              @show options
             return
                 
         livecoffee: () ->
@@ -276,16 +276,17 @@ define (require, exports, module) ->
             @removeHighlightedBlocks()
             @liveCoffeeOutput.hide()
             
-        show: (line) ->
+        show: (options) ->
             console.log "linenumber is #{line}"
-            line = line - 1 # adjustment from 1-based external format to 0-based internal
-            setTimeout (=> @startLiveCoffee(line)), OPEN_FILE_TIMEOUT
+            line = options.line - 1 # adjustment from 1-based external format to 0-based internal
+            setTimeout (=> @startLiveCoffee(line, options.showJS)), OPEN_FILE_TIMEOUT
                 
-        startLiveCoffee: (line) ->
+        startLiveCoffee: (line, showJS) ->
             if @liveCoffeeOutput?.visible
                 @compile()
             else
                 @livecoffee()
+            @liveCoffeeOutput.hide() unless showJS    
             @liveCoffeeOptMatchLines.check()
             setTimeout (() => @highlightBlockFromJS line), OPEN_LIVECOFFEE_TIMEOUT
             

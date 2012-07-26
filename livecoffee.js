@@ -52,8 +52,8 @@
           command: "livecoffee"
         }), MENU_ENTRY_POSITION));
         this.hotitems['livecoffee'] = [this.nodes[1]];
-        ide.addEventListener('livecoffee_show_file', function(lineObject) {
-          return _this.show(lineObject.line);
+        ide.addEventListener('livecoffee_show_file', function(options) {
+          return _this.show(options);
         });
       },
       livecoffee: function() {
@@ -321,21 +321,25 @@
         this.removeHighlightedBlocks();
         return this.liveCoffeeOutput.hide();
       },
-      show: function(line) {
-        var _this = this;
+      show: function(options) {
+        var line,
+          _this = this;
         console.log("linenumber is " + line);
-        line = line - 1;
+        line = options.line - 1;
         return setTimeout((function() {
-          return _this.startLiveCoffee(line);
+          return _this.startLiveCoffee(line, options.showJS);
         }), OPEN_FILE_TIMEOUT);
       },
-      startLiveCoffee: function(line) {
+      startLiveCoffee: function(line, showJS) {
         var _ref,
           _this = this;
         if ((_ref = this.liveCoffeeOutput) != null ? _ref.visible : void 0) {
           this.compile();
         } else {
           this.livecoffee();
+        }
+        if (!showJS) {
+          this.liveCoffeeOutput.hide();
         }
         this.liveCoffeeOptMatchLines.check();
         return setTimeout((function() {
