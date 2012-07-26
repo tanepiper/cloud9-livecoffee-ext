@@ -324,7 +324,6 @@
       show: function(options) {
         var line,
           _this = this;
-        console.log("linenumber is " + line);
         line = options.line - 1;
         return setTimeout((function() {
           return _this.startLiveCoffee(line, options.showJS);
@@ -338,13 +337,13 @@
         } else {
           this.livecoffee();
         }
-        if (!showJS) {
-          this.liveCoffeeOutput.hide();
-        }
         this.liveCoffeeOptMatchLines.check();
-        return setTimeout((function() {
+        setTimeout((function() {
           return _this.highlightBlockFromJS(line);
         }), OPEN_LIVECOFFEE_TIMEOUT);
+        if (!showJS) {
+          return this.closeCodeOutput();
+        }
       }
     });
   });

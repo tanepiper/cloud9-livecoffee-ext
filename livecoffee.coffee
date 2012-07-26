@@ -277,7 +277,6 @@ define (require, exports, module) ->
             @liveCoffeeOutput.hide()
             
         show: (options) ->
-            console.log "linenumber is #{line}"
             line = options.line - 1 # adjustment from 1-based external format to 0-based internal
             setTimeout (=> @startLiveCoffee(line, options.showJS)), OPEN_FILE_TIMEOUT
                 
@@ -286,8 +285,8 @@ define (require, exports, module) ->
                 @compile()
             else
                 @livecoffee()
-            @liveCoffeeOutput.hide() unless showJS    
             @liveCoffeeOptMatchLines.check()
             setTimeout (() => @highlightBlockFromJS line), OPEN_LIVECOFFEE_TIMEOUT
+            @closeCodeOutput() unless showJS 
             
             
