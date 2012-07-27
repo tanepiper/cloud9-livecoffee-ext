@@ -1,5 +1,5 @@
-Cloud9 Live CoffeeScript Extension
-==================================
+Cloud9 Live CoffeeScript Extension (fork on PragTob)
+====================================================
 
 This live CoffeeScript extension for Cloud9 provides a window view of the live
 formatted JavaScript output of a CoffeeScript file as you type.
@@ -12,11 +12,15 @@ Installation
 
 This extension currently only works with self-hosted copies of Cloud9 (either via
 cloning `https://github.com/ajaxorg/cloud9` or `npm install cloud9`).  Third-party
-extensions are not supported on c9.io.
+extensions are not supported on c9.io. As Cloud9 is rapidly involving it is however 
+recommended to use the cloud9 version this plugin was last tested with, which 
+can be found at [our fork](https://github.com/PragTob/cloud9). Then you should
+do:
 
-    git clone git://github.com/tanepiper/cloud9-livecoffee-ext.git cloud9/client/ext/livecoffee
+    git clone git://github.com/PragTob/cloud9-livecoffee-ext.git cloud9/plugins-client/ext.livecoffee
 
-Open the `Windows -> Extension Manager` window, put the path to the extension in
+Open the `Tools -> Extension Manager` window, put the path to the extension in
+
     ext/livecoffee/livecoffee
 
 Click add.  You can now view the window via the Edit menu.
@@ -26,8 +30,9 @@ Options
 
 * Approx Line Match: During compile, the live view will match the line numebr of
 the file you are working on. This is an approximate match of the code output
-location. You can also (currently) right click on the .coffee source file to go
-to the same line
+location. When the livecoffee window is open, matching blocks of CoffeeScript
+and JavaScript are also automatically highlighted as you click in the source
+code. The approximate line matching is provided thanks to the [CoffeeScriptLineMatcher project](https://github.com/showell/CoffeeScriptLineMatcher)
 
 * Compile Bare: Compile the output without the surrounding closure
 
