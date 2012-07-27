@@ -28,7 +28,7 @@ Click add.  You can now view the window via the Edit menu.
 Options
 -------
 
-* Approx Line Match: During compile, the live view will match the line numebr of
+* Approx Line Match: During compile, the live view will match the line number of
 the file you are working on. This is an approximate match of the code output
 location. When the livecoffee window is open, matching blocks of CoffeeScript
 and JavaScript are also automatically highlighted as you click in the source
