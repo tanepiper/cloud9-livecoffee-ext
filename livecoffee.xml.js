@@ -59,7 +59,7 @@ return '<a:application xmlns:a="http://ajax.org/2005/aml">\n' +
 '                    height="350" />\n' +
 '            </a:page>\n' +
 '        </a:tab>\n' +
-'        <a:button onclick="require(\'ext/livecoffee/livecoffee\').closeCodeOutput()">Close</a:button>\n' +
+'        <a:button onclick="require(\'core/ext\').extLut[\'ext/livecoffee/livecoffee\'].closeCodeOutput()">Close</a:button>\n' +
 '    </a:window>\n' +
 '</a:application>\n' +
 '';});
