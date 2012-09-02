@@ -1,5 +1,5 @@
-Cloud9 Live CoffeeScript Extension (fork on PragTob)
-====================================================
+Cloud9 Live CoffeeScript Extension
+==================================
 
 This live CoffeeScript extension for Cloud9 provides a window view of the live
 formatted JavaScript output of a CoffeeScript file as you type.
