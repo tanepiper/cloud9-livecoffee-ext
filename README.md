@@ -1,5 +1,5 @@
-Cloud9 Live CoffeeScript Extension (fork on PragTob)
-====================================================
+Cloud9 Live CoffeeScript Extension
+==================================
 
 This live CoffeeScript extension for Cloud9 provides a window view of the live
 formatted JavaScript output of a CoffeeScript file as you type.
@@ -10,20 +10,20 @@ not closure) on or off via a checkbox.
 Installation
 ------------
 
-This extension currently only works with self-hosted copies of Cloud9 (either via
-cloning `https://github.com/ajaxorg/cloud9` or `npm install cloud9`).  Third-party
-extensions are not supported on c9.io. As Cloud9 is rapidly involving it is however 
-recommended to use the cloud9 version this plugin was last tested with, which 
-can be found at [our fork](https://github.com/PragTob/cloud9). Then you should
-do:
+This extension works with c9.io and with self-hosted copies of Cloud9 (either via
+cloning `https://github.com/ajaxorg/cloud9` or `npm install cloud9`). To install
+it, open the `Tools -> Extension Manager` window in Cloud9, and enter the extension
+path:
 
-    git clone git://github.com/PragTob/cloud9-livecoffee-ext.git cloud9/plugins-client/ext.livecoffee
+    https://github.com/lennartcl/cloud9-livecoffee-ext
 
-Open the `Tools -> Extension Manager` window, put the path to the extension in
+or
 
     ext/livecoffee/livecoffee
 
-Click add.  You can now view the window via the Edit menu.
+for a self-hosted copy.
+
+Click add. You can now view the window via the Edit menu.
 
 Options
 -------

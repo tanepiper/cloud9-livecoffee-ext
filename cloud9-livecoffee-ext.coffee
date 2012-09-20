@@ -5,12 +5,12 @@ define (require, exports, module) ->
     ext = require 'core/ext'
     util = require 'core/util'
     editors = require 'ext/editors/editors'
-    markup = require 'text!ext/livecoffee/livecoffee.xml'
+    markup = require './livecoffee.xml.js'
     menus = require "ext/menus/menus" 
     commands = require "ext/commands/commands"
-    CoffeeScript = require 'ext/livecoffee/vendor/coffeescript'
-    lineMatching = require 'ext/livecoffee/vendor/cs_js_source_mapping'
-    css = require "text!ext/livecoffee/livecoffee.css"
+    CoffeeScript = require './vendor/coffeescript.js'
+    lineMatching = require './vendor/cs_js_source_mapping.js'
+    css = require "./livecoffee.css.js"
     
     DIVIDER_POSITION        = 2100
     MENU_ENTRY_POSITION     = 2200
